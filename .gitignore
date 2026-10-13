@@ -1,0 +1,21 @@
+# Fichier en UTF-8 (un .gitignore en UTF-16 avait laissé passer .env dans le backend).
+
+# build
+dist/
+# types générés par Astro
+.astro/
+
+# dépendances
+node_modules/
+
+# journaux
+npm-debug.log*
+
+# variables d'environnement et secrets
+.env
+.env.*
+
+# fichiers système et éditeurs
+.DS_Store
+Thumbs.db
+.idea/

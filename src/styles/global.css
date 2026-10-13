@@ -1,0 +1,7 @@
+@import 'tailwindcss';
+
+/* Jeton provisoire repris de l'app (noli_app/lib/core/theme/app_theme.dart, primary).
+   Les couleurs, polices et espacements complets viennent de la charte (feature 3). */
+@theme {
+  --color-brand: #f5a623;
+}

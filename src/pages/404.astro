@@ -1,0 +1,13 @@
+---
+// Page d'erreur : Astro la produit en dist/404.html.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { routes, site } from '../config/site';
+---
+
+<BaseLayout title={`Page introuvable · ${site.name}`} description="Cette page n'existe pas.">
+  <main class="mx-auto max-w-2xl px-4 py-16">
+    <h1 class="text-3xl font-bold">Page introuvable</h1>
+    <p class="mt-4">Cette adresse ne mène nulle part.</p>
+    <p class="mt-4"><a class="text-brand underline" href={routes.home}>Retour à l'accueil</a></p>
+  </main>
+</BaseLayout>
