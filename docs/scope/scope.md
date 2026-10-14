@@ -14,7 +14,7 @@ Choix déjà faits pour tout le site : aucune mesure d'audience (donc aucun cook
 | # | Feature | Phase | Status |
 |---|---------|-------|--------|
 | 1 | Pile technique, hébergement et domaine | Foundation | done |
-| 2 | Standards et outillage | Foundation | planned |
+| 2 | Standards et outillage | Foundation | in-progress |
 | 3 | Charte visuelle et gabarit commun | Foundation | planned |
 | 4 | Politique de confidentialité en ligne | Slice 1 | planned |
 | 5 | Page suppression de compte | Slice 2 | planned |
@@ -37,10 +37,12 @@ Choisir comment le site est fait (pages écrites à la main ou générateur de s
 - [x] Test it: `/test pile technique, hébergement et domaine`
 spec [0001](../specs/0001-pile-hebergement-domaine/index.md) · code in `./` (`astro.config.ts`, `render.yaml`, `src/`, `scripts/check-no-inline.mjs`)
 
-### 2. Standards et outillage
+### 2. Standards et outillage · in-progress
 Noter les conventions du projet dans `AGENTS.md` à partir du vrai projet posé, puis installer le formatage et les vérifications choisis.
 **Done when:** `AGENTS.md` décrit le vrai projet, `.gitignore` existe en UTF-8, aucun secret n'est suivi, et les vérifications choisies passent.
-- [ ] Capture conventions + tooling choices: `/audit`
+- [x] Capture conventions + tooling choices: `/audit`
+- [ ] Install the tooling: `/develop tooling`
+- [ ] Verify it: `/check verify standards et outillage`
 
 ### 3. Charte visuelle et gabarit commun · needs a decision
 Reprendre les couleurs, la typo et le logo de l'app (`../noli_app/assets/`) et poser le gabarit que toutes les pages partagent : haut de page avec le logo, pied de page avec les liens légaux et l'adresse support, mise en page de texte long lisible.
