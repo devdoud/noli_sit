@@ -1,7 +1,7 @@
 # 0001. Pile du site public : Astro + Tailwind, site statique Render sur nollli.com
 
 **Date**: 2026-10-13
-**Status**: In Progress
+**Status**: Accepted
 
 ## Summary
 

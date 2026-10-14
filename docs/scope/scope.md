@@ -13,7 +13,7 @@ Choix déjà faits pour tout le site : aucune mesure d'audience (donc aucun cook
 
 | # | Feature | Phase | Status |
 |---|---------|-------|--------|
-| 1 | Pile technique, hébergement et domaine | Foundation | in-progress |
+| 1 | Pile technique, hébergement et domaine | Foundation | done |
 | 2 | Standards et outillage | Foundation | planned |
 | 3 | Charte visuelle et gabarit commun | Foundation | planned |
 | 4 | Politique de confidentialité en ligne | Slice 1 | planned |
@@ -28,13 +28,13 @@ Choix déjà faits pour tout le site : aucune mesure d'audience (donc aucun cook
 
 Pas de modèle de données : le site est fait de pages fixes et n'enregistre rien.
 
-### 1. Pile technique, hébergement et domaine · in-progress · Beta
+### 1. Pile technique, hébergement et domaine · done · Beta
 Choisir comment le site est fait (pages écrites à la main ou générateur de site statique), où il est hébergé (un site statique Render serait cohérent avec le dashboard, voir `../noli_dashboard/render.yaml`) et comment `nollli.com` et `www` pointent vers lui, puis poser un projet vide qui se construit.
 **Done when:** la décision est notée dans une spec (pile, hébergeur, enregistrements DNS à ajouter chez Hostinger sans toucher `api`, `admin` ni les enregistrements email Brevo, aucun `CNAME` à la racine), et le projet vide se construit et s'affiche en local.
 - [x] Decide the stack (spec): `/architect pile technique, hébergement et domaine`
 - [x] Scaffold from the decision: `/develop pile technique, hébergement et domaine`
-- [ ] Verify it: `/check verify pile technique, hébergement et domaine`
-- [ ] Test it: `/test pile technique, hébergement et domaine`
+- [x] Verify it: `/check verify pile technique, hébergement et domaine`
+- [x] Test it: `/test pile technique, hébergement et domaine`
 spec [0001](../specs/0001-pile-hebergement-domaine/index.md) · code in `./` (`astro.config.ts`, `render.yaml`, `src/`, `scripts/check-no-inline.mjs`)
 
 ### 2. Standards et outillage
