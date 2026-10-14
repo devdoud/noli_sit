@@ -41,8 +41,9 @@ spec [0001](../specs/0001-pile-hebergement-domaine/index.md) · code in `./` (`a
 Noter les conventions du projet dans `AGENTS.md` à partir du vrai projet posé, puis installer le formatage et les vérifications choisis.
 **Done when:** `AGENTS.md` décrit le vrai projet, `.gitignore` existe en UTF-8, aucun secret n'est suivi, et les vérifications choisies passent.
 - [x] Capture conventions + tooling choices: `/audit`
-- [ ] Install the tooling: `/develop tooling`
+- [x] Install the tooling: `/develop tooling`
 - [ ] Verify it: `/check verify standards et outillage`
+code in `eslint.config.js`, `.prettierrc.json`, `.husky/pre-commit`, `.gitattributes`, `package.json` (scripts, lint-staged)
 
 ### 3. Charte visuelle et gabarit commun · needs a decision
 Reprendre les couleurs, la typo et le logo de l'app (`../noli_app/assets/`) et poser le gabarit que toutes les pages partagent : haut de page avec le logo, pied de page avec les liens légaux et l'adresse support, mise en page de texte long lisible.
