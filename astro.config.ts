@@ -1,7 +1,7 @@
 // Configuration du site public de Noli. Voir la spec 0001, sections « Configuration du projet »
 // et « Règles pour garder la CSP valide ».
-import { defineConfig } from 'astro/config';
-import tailwindcss from '@tailwindcss/vite';
+import { defineConfig } from 'astro/config'
+import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   site: 'https://nollli.com',
@@ -20,4 +20,4 @@ export default defineConfig({
   },
   devToolbar: { enabled: false },
   prefetch: false,
-});
+})

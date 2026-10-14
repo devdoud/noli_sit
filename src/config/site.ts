@@ -3,7 +3,7 @@
 export const site = {
   name: 'Noli',
   supportEmail: 'support@nollli.com',
-} as const;
+} as const
 
 // Adresses publiques. Elles sont promises aux stores et écrites dans l'app : ne jamais les changer.
 export const routes = {
@@ -13,10 +13,10 @@ export const routes = {
   accountDeletion: '/suppression-compte',
   legalNotice: '/mentions-legales',
   contact: '/contact',
-} as const;
+} as const
 
 // Liens des stores. null tant que l'app n'est pas publiée : le bouton affiche « Bientôt disponible ».
 export const storeLinks: { googlePlay: string | null; appStore: string | null } = {
   googlePlay: null,
   appStore: null,
-};
+}
