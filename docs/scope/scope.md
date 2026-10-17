@@ -49,13 +49,13 @@ code in `eslint.config.js`, `.prettierrc.json`, `.husky/pre-commit`, `.gitattrib
 Reprendre les couleurs, la typo et le logo de l'app (`../noli_app/assets/`) et poser le gabarit que toutes les pages partagent : haut de page avec le logo, pied de page avec les liens légaux et l'adresse support, mise en page de texte long lisible.
 **Done when:** `design.md` couvre couleurs, typo, espacements et composants (dont les boutons stores « Bientôt disponible »), le gabarit s'affiche bien sur un petit téléphone comme sur un ordinateur, et chaque page reçoit son titre et sa description.
 - [x] Design it (spec): `/architect charte visuelle et gabarit commun`
-- [ ] Build it: `/develop charte visuelle et gabarit commun`
-   - [ ] Jetons, polices, styles de base et fonctions de `site.ts` (AC-2, AC-7, AC-8, AC-10)
-   - [ ] Gabarit sur l'accueil et la 404 : favicons, `head`, lien d'évitement, haut et pied de page (AC-2 à AC-5, AC-9 à AC-11)
-   - [ ] Boutons stores et gabarit légal (AC-6, AC-7)
-   - [ ] `design.md` et tests (AC-1 à AC-8)
+- [x] Build it: `/develop charte visuelle et gabarit commun`
+   - [x] Jetons, polices, styles de base et fonctions de `site.ts` (AC-2, AC-7, AC-8, AC-10)
+   - [x] Gabarit sur l'accueil et la 404 : favicons, `head`, lien d'évitement, haut et pied de page (AC-2 à AC-5, AC-9 à AC-11)
+   - [x] Boutons stores et gabarit légal (AC-6, AC-7)
+   - [x] `design.md` et tests (AC-1 à AC-8)
 - [ ] Verify it: `/check verify charte visuelle et gabarit commun`
-spec [0002](../specs/0002-charte-gabarit-commun/index.md)
+spec [0002](../specs/0002-charte-gabarit-commun/index.md) · code in `src/styles/global.css`, `src/config/site.ts`, `src/layouts/`, `src/components/`, `design.md`
 
 ## Slice 1: première page en ligne
 
