@@ -113,7 +113,9 @@ Si vous pensez que vos droits ne sont pas respectés, vous pouvez porter réclam
 Vous pouvez supprimer votre compte de deux façons :
 
 - **Dans l'application** : Profil, puis Supprimer mon compte. Vous confirmez avec votre mot de passe ; la suppression est immédiate et définitive.
-- **Par email** : écrivez à support@nollli.com depuis l'adresse email de votre compte. Un administrateur traite votre demande.
+- **Par email** : écrivez à support@nollli.com depuis l'adresse email de votre compte. Un administrateur traite votre demande dans un délai d'un mois, prolongeable de deux mois si elle est complexe.
+
+Toutes les étapes, y compris en cas de mot de passe oublié ou d'adresse email perdue, sont sur la page [Supprimer votre compte Noli](/suppression-compte).
 
 Nous effaçons alors votre compte, votre historique, vos notifications, vos appareils, vos photos et vos demandes de mot de passe oublié. Nous gardons seulement les traces de paiement, sans votre numéro ni de lien avec votre compte, et la trace de la suppression (voir « Combien de temps nous les gardons »). Un abonnement premium en cours est perdu, sans remboursement. Vous recevez un email de confirmation, et vous pourrez recréer un compte vide avec la même adresse.
 

@@ -44,6 +44,7 @@ export const dataHosting: { readonly region: string } = {
 // « Suppression de compte », « Mentions légales », « Contact et aide »).
 export const footerLinks: readonly { label: string; href: Route }[] = [
   { label: 'Confidentialité', href: '/confidentialite' },
+  { label: 'Suppression de compte', href: '/suppression-compte' },
 ]
 
 // Liens des stores. null tant que l'app n'est pas publiée : le bouton affiche « Bientôt disponible ».
