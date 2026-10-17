@@ -1,0 +1,27 @@
+---
+// Une page par texte de la collection legal (specs 0001 et 0003), rendue par LegalLayout.
+import { getCollection, render } from 'astro:content'
+import LegalLayout from '../layouts/LegalLayout.astro'
+import { fillSiteValues, siteValues } from '../config/site-values'
+
+export async function getStaticPaths() {
+  const entries = await getCollection('legal')
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }))
+}
+
+const { entry } = Astro.props
+
+// Le chargeur de contenu avale les erreurs du plugin remark (la page sortirait vide) : on revérifie
+// le texte brut ici, où une erreur arrête bien le build. Strict sur Render (spec 0003, AC-6).
+fillSiteValues(entry.body ?? '', siteValues, Boolean(process.env.RENDER))
+
+const { Content } = await render(entry)
+---
+
+<LegalLayout
+  title={entry.data.title}
+  description={entry.data.description}
+  updatedAt={entry.data.updatedAt}
+>
+  <Content />
+</LegalLayout>

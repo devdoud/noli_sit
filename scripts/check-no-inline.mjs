@@ -3,6 +3,8 @@
 // `astro preview` n'applique pas les en têtes de render.yaml, donc ce contrôle les remplace en local.
 // Il échoue aussi si une page ne charge aucune feuille /_astro/*.css (spec 0002) : une page sans
 // style ne doit jamais partir en ligne.
+// Textes légaux (spec 0003) : aucune balise {{…}} restante, aucun texte vide, et sur Render
+// (variable RENDER) aucun « [À COMPLÉTER ».
 import { readdir, readFile } from 'node:fs/promises'
 import { join, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -14,6 +16,8 @@ const forbidden = [
   { label: 'attribut style=', pattern: /\sstyle\s*=/i },
 ]
 const stylesheet = /<link rel="stylesheet" href="\/_astro\/[^"]+\.css"/
+const emptyLegalText = /<div class="prose prose-noli[^"]*">\s*<\/div>/
+const strict = Boolean(process.env.RENDER)
 
 async function listHtmlFiles(dir) {
   const entries = await readdir(dir, { withFileTypes: true })
@@ -40,10 +44,17 @@ for (const file of htmlFiles) {
     if (pattern.test(html)) problems.push(`${relative(root, file)} : ${label}`)
   }
   if (!stylesheet.test(html)) problems.push(`${relative(root, file)} : feuille de style absente`)
+  if (html.includes('{{')) problems.push(`${relative(root, file)} : balise {{…}} non remplacée`)
+  if (emptyLegalText.test(html)) {
+    problems.push(`${relative(root, file)} : texte légal vide`)
+  }
+  if (strict && html.includes('[À COMPLÉTER')) {
+    problems.push(`${relative(root, file)} : valeur à compléter dans src/config/site.ts`)
+  }
 }
 
 if (problems.length > 0) {
-  console.error('check-no-inline : pages refusées (CSP ou style manquant) :')
+  console.error('check-no-inline : pages refusées :')
   for (const problem of problems) console.error(`  ${problem}`)
   process.exit(1)
 }

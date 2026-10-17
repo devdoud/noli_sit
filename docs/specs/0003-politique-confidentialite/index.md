@@ -1,7 +1,7 @@
 # 0003. Politique de confidentialité et première mise en ligne de nollli.com
 
 **Date**: 2026-10-17
-**Status**: Proposed
+**Status**: In Progress
 
 ## Summary
 

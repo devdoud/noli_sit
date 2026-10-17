@@ -19,6 +19,26 @@ export const routes = {
 
 export type Route = (typeof routes)[keyof typeof routes]
 
+// Éditeur du site et responsable du traitement (spec 0003), repris par les mentions légales.
+// À remplir avant de fusionner dans main : sinon le build Render échoue (balises {{editeur.*}}).
+export const publisher: {
+  readonly name: string
+  readonly legalForm: string
+  readonly address: string
+  readonly country: string
+} = {
+  name: '',
+  legalForm: '',
+  address: '',
+  country: '',
+}
+
+// Région de la base de données (MongoDB Atlas) et de l'API (Render), visible dans leurs
+// tableaux de bord. Ex. 'Union européenne (Francfort, Allemagne)'. Balise {{hebergement.region}}.
+export const dataHosting: { readonly region: string } = {
+  region: '',
+}
+
 // Liens du pied de page : seulement les pages déjà construites. Chaque feature de page ajoute sa
 // ligne quand elle est livrée (« Confidentialité », « Conditions d'utilisation »,
 // « Suppression de compte », « Mentions légales », « Contact et aide »).

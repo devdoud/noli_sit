@@ -2,6 +2,7 @@
 // et « Règles pour garder la CSP valide ».
 import { defineConfig } from 'astro/config'
 import tailwindcss from '@tailwindcss/vite'
+import { remarkSiteValues } from './src/config/site-values'
 
 export default defineConfig({
   site: 'https://nollli.com',
@@ -17,6 +18,10 @@ export default defineConfig({
     plugins: [tailwindcss()],
     // Aucune ressource transformée en data: (font-src 'self' les bloquerait).
     build: { assetsInlineLimit: 0 },
+  },
+  markdown: {
+    // Balises {{…}} des textes légaux (spec 0003) : strict sur Render, où une valeur vide fait échouer le build.
+    remarkPlugins: [[remarkSiteValues, { strict: Boolean(process.env.RENDER) }]],
   },
   devToolbar: { enabled: false },
   prefetch: false,
