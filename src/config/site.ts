@@ -42,7 +42,9 @@ export const dataHosting: { readonly region: string } = {
 // Liens du pied de page : seulement les pages déjà construites. Chaque feature de page ajoute sa
 // ligne quand elle est livrée (« Confidentialité », « Conditions d'utilisation »,
 // « Suppression de compte », « Mentions légales », « Contact et aide »).
-export const footerLinks: readonly { label: string; href: Route }[] = []
+export const footerLinks: readonly { label: string; href: Route }[] = [
+  { label: 'Confidentialité', href: '/confidentialite' },
+]
 
 // Liens des stores. null tant que l'app n'est pas publiée : le bouton affiche « Bientôt disponible ».
 export const storeLinks: { googlePlay: string | null; appStore: string | null } = {

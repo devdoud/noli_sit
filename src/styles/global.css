@@ -123,6 +123,13 @@
   text-underline-offset: 4px;
 }
 
+/* Tableaux larges des textes légaux : ils défilent seuls sur petit écran, pas la page. */
+.prose-noli :where(table) {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
 .prose-noli :where(a):hover {
   color: var(--color-brand-bright);
 }
