@@ -16,7 +16,7 @@ Choix déjà faits pour tout le site : aucune mesure d'audience (donc aucun cook
 | 1 | Pile technique, hébergement et domaine | Foundation | done |
 | 2 | Standards et outillage | Foundation | done |
 | 3 | Charte visuelle et gabarit commun | Foundation | done |
-| 4 | Politique de confidentialité en ligne | Slice 1 | planned |
+| 4 | Politique de confidentialité en ligne | Slice 1 | in-progress |
 | 5 | Page suppression de compte | Slice 2 | planned |
 | 6 | Conditions générales d'utilisation | Slice 3 | planned |
 | 7 | Mentions légales | Slice 4 | planned |
@@ -59,10 +59,17 @@ spec [0002](../specs/0002-charte-gabarit-commun/index.md) · code in `src/styles
 
 ## Slice 1: première page en ligne
 
-### 4. Politique de confidentialité en ligne · needs a decision
+### 4. Politique de confidentialité en ligne · in-progress
 La page qui bloque la publication sur les deux stores, et le premier fil complet : texte, gabarit, hébergement, DNS et HTTPS sur le vrai domaine. Elle prouve tout le chemin pour les pages suivantes. Le contenu part de la liste des données réellement collectées dans `HANDOFF.md`.
 **Done when:** `https://nollli.com/confidentialite` répond en HTTPS (et `www` y mène aussi), les emails Brevo partent toujours, la page liste chaque type de donnée collectée, chaque prestataire, les durées de conservation, le cadre légal (Bénin et APDP, RGPD) et les droits avec le contact `support@nollli.com`, et le texte a été relu par une personne qualifiée.
-- [ ] Design it (spec): `/architect politique de confidentialité`
+- [x] Design it (spec): `/architect politique de confidentialité`
+- [ ] Build it: `/develop politique de confidentialité`
+   - [ ] Collection `legal`, route `[slug]` et balises `{{…}}` depuis `site.ts` (AC-1, AC-6)
+   - [ ] Texte complet depuis l'inventaire et lien du pied de page (AC-2 à AC-5, AC-7 à AC-9, AC-12)
+   - [ ] Tests du plugin et de la page (AC-1 à AC-9, AC-12)
+   - [ ] Mise en ligne sur Render et `nollli.com`, par toi (AC-10)
+- [ ] Verify it: `/check verify politique de confidentialité` (dont la relecture juridique, AC-11)
+spec [0003](../specs/0003-politique-confidentialite/index.md)
 
 ## Slice 2: suppression de compte
 
