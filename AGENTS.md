@@ -6,7 +6,7 @@ Site public de Noli sur `https://nollli.com` : vitrine et pages légales exigée
 
 - **Language / Runtime**: TypeScript strict (`astro/tsconfigs/strict`), Node 22.12 ou plus (`.nvmrc`)
 - **Framework**: Astro 7, sortie statique (`output: 'static'`, aucun adaptateur), zéro JavaScript envoyé au navigateur
-- **Key dependencies**: Tailwind CSS 4 (`@tailwindcss/vite`), `@tailwindcss/typography`, polices `@fontsource-variable/bricolage-grotesque` et `@fontsource-variable/plus-jakarta-sans`, Vitest
+- **Key dependencies**: Tailwind CSS 4 (`@tailwindcss/vite`), `@tailwindcss/typography`, polices `@fontsource-variable/bricolage-grotesque` et `@fontsource-variable/plus-jakarta-sans`, `@astrojs/markdown-remark` (moteur Markdown unified, nécessaire aux plugins remark : Astro 7 utilise Sätteri par défaut), Vitest
 - **Package manager**: npm (`package-lock.json` commité)
 - **Hosting**: Render Static Site (`render.yaml`), déploiement à chaque push sur `main`. Détails : spec [0001](docs/specs/0001-pile-hebergement-domaine/index.md)
 
@@ -25,6 +25,7 @@ npm run check     # Types seulement
 npm run lint      # ESLint (lint:fix pour corriger)
 npm run format    # Prettier (format:check pour vérifier sans écrire)
 node scripts/make-icons.mjs  # Régénère les favicons de public/ depuis src/assets/noli-logo.png
+RENDER=true npm run build    # Simule le build Render : échoue si une valeur {{…}} de site.ts est vide
 ```
 
 ## Specs
@@ -39,6 +40,8 @@ Stored in `docs/specs/`. Format: `docs/specs/NNNN-title.md` (ou `NNNN-title/inde
 - CSP stricte : aucun `<script>`, `is:inline`, `define:vars`, `set:html` avec du code, attribut `style=""` ni HTML brut dans le Markdown. Pas d'option `layout`/`fit` sur `<Image>`. Chaque page charge une feuille `/_astro/*.css`. Le build échoue sinon.
 - Design system : toute interface suit `design.md` (direction, gabarit, composants, accessibilité). Les jetons vivent dans `src/styles/global.css` et sont recopiés à l'identique dans le tableau de `design.md` (un test vérifie la concordance). Toute page passe par `BaseLayout` ou `LegalLayout`.
 - Une page n'entre dans `footerLinks` (`src/config/site.ts`) qu'une fois construite : chaque feature de page y ajoute sa ligne.
+- Textes légaux : un fichier `src/content/legal/<adresse>.md` (rendu par `src/pages/[slug].astro`). Les valeurs d'identité passent par les balises `{{editeur.*}}` et `{{hebergement.region}}` (`src/config/site-values.ts`), seulement dans le texte courant. `publisher` et `dataHosting` de `site.ts` doivent être remplis avant de fusionner dans `main` : sinon Render refuse tout déploiement.
+- La politique de confidentialité décrit ce que le code fait vraiment (inventaire de la spec 0003) : toute nouvelle collecte de données ou tout nouveau prestataire dans l'app ou le backend impose de mettre à jour `confidentialite.md` et son `updatedAt`.
 - Accessibilité WCAG AA : contrastes, clavier, focus visible, un seul `<h1>` par page, `alt` sur chaque image, `lang="fr"`.
 - Nommage : fichiers de pages et adresses en français sans accent (`suppression-compte`), composants en PascalCase anglais, code en anglais, textes visibles en français.
 - Exports nommés seulement dans les `.ts` (les composants `.astro` gardent leur export par défaut).
