@@ -82,12 +82,26 @@ describe('check-no-inline', () => {
   it('does not flag words that only look like style, such as data-style or a class name', async () => {
     await writePage(
       'index.html',
-      '<html><body><p data-style="x" class="stylebox">ok</p></body></html>',
+      '<html><head><link rel="stylesheet" href="/_astro/a.css"></head><body><p data-style="x" class="stylebox">ok</p></body></html>',
     )
 
     const { code } = runCheck()
 
     expect(code).toBe(0)
+  })
+
+  it('fails and names the page when it loads no /_astro/ stylesheet (spec 0002)', async () => {
+    await writePage('index.html', cleanPage)
+    await writePage(
+      'sans-style.html',
+      '<!DOCTYPE html><html lang="fr"><body><h1>Noli</h1></body></html>',
+    )
+
+    const { code, out } = runCheck()
+
+    expect(code).toBe(1)
+    expect(out).toContain('sans-style.html : feuille de style absente')
+    expect(out).not.toContain('index.html :')
   })
 
   it('fails when dist holds no HTML page at all', async () => {

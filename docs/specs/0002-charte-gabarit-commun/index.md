@@ -1,7 +1,7 @@
 # 0002. Charte visuelle et gabarit commun du site
 
 **Date**: 2026-10-17
-**Status**: In Progress
+**Status**: Accepted
 
 ## Summary
 

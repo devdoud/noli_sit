@@ -1,6 +1,8 @@
 // Garde fou de la CSP (spec 0001) : le build échoue si une page de dist/ contient
 // une balise <script>, une balise <style> ou un attribut style="".
 // `astro preview` n'applique pas les en têtes de render.yaml, donc ce contrôle les remplace en local.
+// Il échoue aussi si une page ne charge aucune feuille /_astro/*.css (spec 0002) : une page sans
+// style ne doit jamais partir en ligne.
 import { readdir, readFile } from 'node:fs/promises'
 import { join, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -11,6 +13,7 @@ const forbidden = [
   { label: 'balise <style>', pattern: /<style\b/i },
   { label: 'attribut style=', pattern: /\sstyle\s*=/i },
 ]
+const stylesheet = /<link rel="stylesheet" href="\/_astro\/[^"]+\.css"/
 
 async function listHtmlFiles(dir) {
   const entries = await readdir(dir, { withFileTypes: true })
@@ -36,14 +39,15 @@ for (const file of htmlFiles) {
   for (const { label, pattern } of forbidden) {
     if (pattern.test(html)) problems.push(`${relative(root, file)} : ${label}`)
   }
+  if (!stylesheet.test(html)) problems.push(`${relative(root, file)} : feuille de style absente`)
 }
 
 if (problems.length > 0) {
-  console.error('check-no-inline : contenu en ligne interdit par la CSP :')
+  console.error('check-no-inline : pages refusées (CSP ou style manquant) :')
   for (const problem of problems) console.error(`  ${problem}`)
   process.exit(1)
 }
 
 console.log(
-  `check-no-inline : ${htmlFiles.length} pages contrôlées, aucun script ni style en ligne.`,
+  `check-no-inline : ${htmlFiles.length} pages contrôlées, aucun script ni style en ligne, feuille de style présente.`,
 )

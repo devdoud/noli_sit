@@ -15,7 +15,7 @@ Choix déjà faits pour tout le site : aucune mesure d'audience (donc aucun cook
 |---|---------|-------|--------|
 | 1 | Pile technique, hébergement et domaine | Foundation | done |
 | 2 | Standards et outillage | Foundation | done |
-| 3 | Charte visuelle et gabarit commun | Foundation | in-progress |
+| 3 | Charte visuelle et gabarit commun | Foundation | done |
 | 4 | Politique de confidentialité en ligne | Slice 1 | planned |
 | 5 | Page suppression de compte | Slice 2 | planned |
 | 6 | Conditions générales d'utilisation | Slice 3 | planned |
@@ -45,7 +45,7 @@ Noter les conventions du projet dans `AGENTS.md` à partir du vrai projet posé,
 - [x] Verify it: `/check verify standards et outillage`
 code in `eslint.config.js`, `.prettierrc.json`, `.husky/pre-commit`, `.gitattributes`, `package.json` (scripts, lint-staged)
 
-### 3. Charte visuelle et gabarit commun · in-progress
+### 3. Charte visuelle et gabarit commun · done
 Reprendre les couleurs, la typo et le logo de l'app (`../noli_app/assets/`) et poser le gabarit que toutes les pages partagent : haut de page avec le logo, pied de page avec les liens légaux et l'adresse support, mise en page de texte long lisible.
 **Done when:** `design.md` couvre couleurs, typo, espacements et composants (dont les boutons stores « Bientôt disponible »), le gabarit s'affiche bien sur un petit téléphone comme sur un ordinateur, et chaque page reçoit son titre et sa description.
 - [x] Design it (spec): `/architect charte visuelle et gabarit commun`
@@ -54,7 +54,7 @@ Reprendre les couleurs, la typo et le logo de l'app (`../noli_app/assets/`) et p
    - [x] Gabarit sur l'accueil et la 404 : favicons, `head`, lien d'évitement, haut et pied de page (AC-2 à AC-5, AC-9 à AC-11)
    - [x] Boutons stores et gabarit légal (AC-6, AC-7)
    - [x] `design.md` et tests (AC-1 à AC-8)
-- [ ] Verify it: `/check verify charte visuelle et gabarit commun`
+- [x] Verify it: `/check verify charte visuelle et gabarit commun`
 spec [0002](../specs/0002-charte-gabarit-commun/index.md) · code in `src/styles/global.css`, `src/config/site.ts`, `src/layouts/`, `src/components/`, `design.md`
 
 ## Slice 1: première page en ligne
