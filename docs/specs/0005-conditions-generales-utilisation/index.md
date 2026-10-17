@@ -1,7 +1,7 @@
 # 0005. Conditions générales d'utilisation
 
 **Date**: 2026-10-17
-**Status**: Proposed
+**Status**: In Progress
 
 ## Summary
 

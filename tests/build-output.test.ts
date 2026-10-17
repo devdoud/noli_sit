@@ -18,6 +18,7 @@ let indexHtml: string
 let notFoundHtml: string
 let privacyHtml: string
 let deletionHtml: string
+let termsHtml: string
 let css: string
 
 // Le morceau de html qui va de start jusqu'au premier end qui le suit.
@@ -41,6 +42,7 @@ beforeAll(async () => {
   notFoundHtml = await readFile(join(outDir, '404.html'), 'utf8')
   privacyHtml = await readFile(join(outDir, 'confidentialite.html'), 'utf8')
   deletionHtml = await readFile(join(outDir, 'suppression-compte.html'), 'utf8')
+  termsHtml = await readFile(join(outDir, 'cgu.html'), 'utf8')
   const cssFiles = files.filter((file) => file.startsWith('_astro/') && file.endsWith('.css'))
   css = (await Promise.all(cssFiles.map((file) => readFile(join(outDir, file), 'utf8')))).join('\n')
 }, 120_000)
@@ -54,6 +56,7 @@ const pages = [
   ['404 page', () => notFoundHtml],
   ['privacy page', () => privacyHtml],
   ['account deletion page', () => deletionHtml],
+  ['terms of use page', () => termsHtml],
 ] as const
 
 describe('build output (spec 0001)', () => {
@@ -83,7 +86,7 @@ describe('build output (spec 0001)', () => {
     const scripts = files.filter((file) => file.endsWith('.js'))
     expect(scripts.every((file) => file.startsWith('_astro/'))).toBe(true)
     expect(indexHtml).toMatch(/<script type="module" src="\/_astro\/[^"]+\.js"><\/script>/)
-    for (const page of [notFoundHtml, privacyHtml, deletionHtml]) {
+    for (const page of [notFoundHtml, privacyHtml, deletionHtml, termsHtml]) {
       expect(page).not.toMatch(/<script\b/i)
     }
   })
@@ -403,6 +406,120 @@ describe('account deletion page (spec 0004)', () => {
       expect(privacy).toBeGreaterThan(-1)
       expect(deletion).toBeGreaterThan(privacy)
       expect(footer).toContain('href="/suppression-compte"')
+    },
+  )
+})
+
+describe('terms of use page (spec 0005)', () => {
+  const text = () => termsHtml.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ')
+  // Le texte des CGU seul : sans l'en tête ni le pied de page (boutons des stores).
+  const prose = () =>
+    between(termsHtml, 'prose-noli', '<footer')
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/\s+/g, ' ')
+
+  it('is built at /cgu with its title, canonical and French date (covers: AC-1)', () => {
+    expect(files).toContain('cgu.html')
+    expect(termsHtml).toContain('<title>Conditions générales d’utilisation · Noli</title>')
+    expect(termsHtml).toContain('<link rel="canonical" href="https://nollli.com/cgu">')
+    expect(termsHtml).toMatch(
+      /Mis à jour le <time datetime="\d{4}-\d{2}-\d{2}">\d{1,2} \S+ \d{4}<\/time>/,
+    )
+    expect([...termsHtml.matchAll(/<h1\b/g)]).toHaveLength(1)
+  })
+
+  it('has the 14 sections in the spec order (covers: AC-2)', () => {
+    const headings = [...termsHtml.matchAll(/<h2[^>]*>(.*?)<\/h2>/g)].map((m) =>
+      m[1].replaceAll('’', "'"),
+    )
+    expect(headings).toEqual([
+      'Objet et acceptation',
+      'Le service',
+      'Votre compte',
+      'Utilisation des contenus',
+      "L'abonnement premium",
+      'Supprimer votre compte',
+      'Propriété intellectuelle',
+      'Données personnelles',
+      'Disponibilité et responsabilité',
+      'Suspension du compte',
+      'Modifications des conditions',
+      'Droit applicable et litiges',
+      'Dispositions générales',
+      'Nous contacter',
+    ])
+  })
+
+  it('fills the publisher tags from site.ts, or marks them to complete (covers: AC-3)', () => {
+    expect(termsHtml).not.toContain('{{')
+    for (const tag of [
+      'editeur.nom',
+      'editeur.forme',
+      'editeur.adresse',
+      'editeur.pays',
+    ] as const) {
+      const value = siteValues[tag].trim()
+      expect(text(), tag).toContain(value === '' ? `[À COMPLÉTER : ${tag}]` : value)
+    }
+  })
+
+  it.each([
+    '30 jours de premium',
+    'renouvellement automatique',
+    'un jour de plus',
+    'KkiaPay',
+    'sans remboursement, sauf erreur de paiement',
+    '72 heures',
+    'numéro de transaction',
+    'affiché dans l’application avant tout paiement',
+    'pas encore ouvert',
+    '13 ans',
+    'usage privé',
+    '30 jours avant',
+    'tribunaux',
+    'version française',
+    'force majeure',
+    site.supportEmail,
+  ])('states « %s » (covers: AC-4 to AC-11)', (phrase) => {
+    expect(text()).toContain(phrase)
+  })
+
+  it('links to the account deletion page and the privacy policy (covers: AC-8)', () => {
+    expect(termsHtml).toMatch(/<a href="\/suppression-compte">[^<]+<\/a>/)
+    expect(termsHtml).toMatch(/<a href="\/confidentialite">[^<]+<\/a>/)
+  })
+
+  it('promises no amount, currency, store billing or draft leftovers (covers: AC-4, AC-5, AC-7)', () => {
+    expect(text()).not.toMatch(/\d[\d\s.,]*\s?(FCFA|XOF|NGN|€|\$)/)
+    for (const phrase of [
+      '8 caractères',
+      'lettres, chiffres',
+      'achat intégré',
+      'App Store',
+      'Google Play',
+      'directeur',
+      'dès leur sortie',
+    ]) {
+      expect(prose(), phrase).not.toContain(phrase)
+    }
+  })
+
+  it('says « vous », never « tu » (covers: AC-3)', () => {
+    expect(prose()).not.toMatch(/(?<![\p{L}\p{N}])(tu|ton|ta|tes|toi|te|tien)(?![\p{L}\p{N}])/iu)
+    expect(prose()).not.toMatch(/(?<![\p{L}\p{N}])t['’]/iu)
+  })
+
+  it.each(pages)(
+    'lists Conditions d’utilisation between the two legal links in the %s footer (covers: AC-12)',
+    (_n, html) => {
+      const footer = between(html(), '<footer', '</footer>')
+      const privacy = footer.indexOf('>Confidentialité</a>')
+      const terms = footer.indexOf('>Conditions d’utilisation</a>')
+      const deletion = footer.indexOf('>Suppression de compte</a>')
+      expect(privacy).toBeGreaterThan(-1)
+      expect(terms).toBeGreaterThan(privacy)
+      expect(deletion).toBeGreaterThan(terms)
+      expect(footer).toContain('href="/cgu"')
     },
   )
 })

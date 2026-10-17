@@ -90,12 +90,12 @@ spec [0004](../specs/0004-page-suppression-compte/index.md) · code in `src/cont
 Les règles d'usage du service : compte, contenu, abonnement premium payé par KkiaPay, durée, résiliation, suppression de compte.
 **Done when:** `https://nollli.com/cgu` couvre l'usage, l'abonnement premium (ce qu'il donne, comment il se paie, ce qui se passe à la fin ou à la résiliation), la suppression de compte et le droit applicable, et le texte a été relu par une personne qualifiée, en priorité la partie paiement.
 - [x] Design it (spec): `/architect conditions générales d'utilisation`
-- [ ] Build it: `/develop conditions générales d'utilisation`
-   - [ ] Texte des CGU depuis le brouillon de l'app corrigé contre le code (AC-1 à AC-11, AC-13)
-   - [ ] Lien du pied de page (AC-12)
-   - [ ] Tests et `verify.md` (AC-1 à AC-13)
+- [x] Build it: `/develop conditions générales d'utilisation`
+   - [x] Texte des CGU depuis le brouillon de l'app corrigé contre le code (AC-1 à AC-11, AC-13)
+   - [x] Lien du pied de page (AC-12)
+   - [x] Tests et `verify.md` (AC-1 à AC-13)
 - [ ] Verify it: `/check verify conditions générales d'utilisation` (dont la relecture juridique, AC-13)
-spec [0005](../specs/0005-conditions-generales-utilisation/index.md)
+spec [0005](../specs/0005-conditions-generales-utilisation/index.md) · code in `src/content/legal/cgu.md`
 
 ## Slice 4: mentions légales
 
