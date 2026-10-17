@@ -416,6 +416,7 @@ describe('home page (spec 0006)', () => {
       m[1].replace(/\s+/g, ' '),
     )
     expect(headings).toEqual([
+      'Dans l’application',
       'Pourquoi Noli',
       'Comment ça marche',
       'Gratuit ou Premium',
@@ -458,7 +459,30 @@ describe('home page (spec 0006)', () => {
     expect(text()).not.toContain('dès leur sortie')
   })
 
-  it('loads no image in the page body (covers: AC-4)', () => {
-    expect(between(indexHtml, '<main', '</main>')).not.toContain('<img')
+  const images = () =>
+    [...between(indexHtml, '<main', '</main>').matchAll(/<img\b[^>]*>/g)].map((m) => m[0])
+
+  it('shows the 3 app screenshots in the hero phone and in the gallery (covers: AC-4)', () => {
+    expect(images()).toHaveLength(6)
+  })
+
+  it('serves every screenshot from the site, resized, with its size set (covers: AC-4)', () => {
+    for (const img of images()) {
+      expect(img).toMatch(/\ssrc="\/_astro\/[^"]+\.webp"/)
+      expect(img).toMatch(/\ssrcset="[^"]+"/)
+      expect(img).toMatch(/\swidth="\d+"/)
+      expect(img).toMatch(/\sheight="\d+"/)
+      expect(img).not.toMatch(/\sstyle=/)
+    }
+  })
+
+  it('keeps the hero phone decorative and describes the gallery screenshots (covers: AC-4)', () => {
+    const hero = between(indexHtml, 'data-hero="phone"', '</section>')
+    const heroImages = [...hero.matchAll(/<img\b[^>]*>/g)].map((m) => m[0])
+    expect(heroImages).toHaveLength(3)
+    // Astro écrit un alt vide sous la forme `alt` seul, équivalent à alt="".
+    for (const img of heroImages) expect(img).toMatch(/\salt(="")?[\s>]/)
+    const described = images().filter((img) => /\salt="[^"]{20,}"/.test(img))
+    expect(described).toHaveLength(3)
   })
 })

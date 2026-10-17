@@ -20,12 +20,17 @@ motion.add('(prefers-reduced-motion: no-preference)', () => {
   animateScene()
   animateMarquee()
   revealOnScroll()
-  scrubPlayback()
+  cycleScreens()
   if (finePointer) {
     followPointer()
     tiltCards()
     magnetizeButtons()
   }
+})
+
+// L'éventail 3D de la galerie ne joue que sur grand écran (sur mobile : carrousel immobile).
+motion.add('(prefers-reduced-motion: no-preference) and (min-width: 768px)', () => {
+  fanOutGallery()
 })
 
 // Entrée du bandeau : les éléments [data-hero] sont masqués par le CSS avant ce script
@@ -121,7 +126,7 @@ function animateBackdrop(): void {
   })
 }
 
-// Scène du téléphone : anneaux orbitaux, flottement, balayage de l'écran, reflet de l'affiche,
+// Scène du téléphone : anneaux orbitaux, flottement, balayage et reflet de l'écran,
 // capsules qui ondulent, lueur tournante de la carte Premium.
 function animateScene(): void {
   gsap.utils.toArray<HTMLElement>('[data-motion="ring"]').forEach((ring, index) => {
@@ -236,22 +241,49 @@ function revealOnScroll(): void {
   })
 }
 
-// La barre de lecture du téléphone avance avec le défilement du bandeau.
-function scrubPlayback(): void {
-  gsap.fromTo(
-    '[data-motion="progress"]',
-    { width: '40%' },
-    {
-      width: '96%',
-      ease: 'none',
-      scrollTrigger: {
-        trigger: '[data-motion="hero"]',
-        start: 'top top',
-        end: 'bottom top',
-        scrub: 0.6,
+// Le téléphone du bandeau passe d'un écran de l'app au suivant : l'écran suivant se dévoile
+// de haut en bas, comme balayé, puis le précédent s'efface.
+function cycleScreens(): void {
+  const screens = gsap.utils.toArray<HTMLElement>('[data-motion="screen"]')
+  if (screens.length < 2) return
+  const timeline = gsap.timeline({ repeat: -1, delay: 1.2 })
+  screens.forEach((current, index) => {
+    const next = screens[(index + 1) % screens.length]
+    timeline
+      .set(next, { zIndex: 2, opacity: 1, clipPath: 'inset(0% 0% 100% 0%)' }, '+=3.2')
+      .set(current, { zIndex: 1 })
+      .to(next, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1, ease: 'power3.inOut' })
+      .set(current, { opacity: 0, zIndex: 0 })
+  })
+}
+
+// Les captures arrivent en éventail incliné et se redressent avec le défilement.
+function fanOutGallery(): void {
+  const gallery = document.querySelector<HTMLElement>('[data-motion="gallery"]')
+  if (!gallery) return
+  gsap.utils.toArray<HTMLElement>('[data-shot]').forEach((shot) => {
+    const angle = Number(shot.dataset.angle ?? '0')
+    gsap.fromTo(
+      shot,
+      {
+        rotationY: angle,
+        rotationX: 18,
+        y: 140,
+        scale: 0.86,
+        filter: 'blur(4px) brightness(0.6)',
+        transformPerspective: 1400,
       },
-    },
-  )
+      {
+        rotationY: 0,
+        rotationX: 0,
+        y: 0,
+        scale: 1,
+        filter: 'blur(0px) brightness(1)',
+        ease: 'none',
+        scrollTrigger: { trigger: gallery, start: 'top 95%', end: 'center 60%', scrub: 0.8 },
+      },
+    )
+  })
 }
 
 // Le projecteur et le téléphone suivent la souris ; les capsules bougent selon leur profondeur.

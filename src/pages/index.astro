@@ -1,9 +1,46 @@
 ---
-// Accueil vitrine (spec 0006) : bandeau, atouts, étapes, offres, questions, rappel final.
-// Visuels décoratifs en CSS seulement (aria-hidden), aucun JavaScript, aucune image.
+// Accueil vitrine (spec 0006) : bandeau, aperçu de l'app, atouts, étapes, offres, questions,
+// rappel final. Décor en CSS (aria-hidden) ; captures réelles de l'app servies par <Image>.
+import { Image } from 'astro:assets'
 import BaseLayout from '../layouts/BaseLayout.astro'
 import StoreButtons from '../components/StoreButtons.astro'
 import { routes } from '../config/site'
+import homeScreen from '../assets/captures/accueil.png'
+import seriesScreen from '../assets/captures/serie.png'
+import exploreScreen from '../assets/captures/explorer.png'
+
+// Captures de l'app (1080 × 2039). Le téléphone du bandeau les fait défiler (décoratif, alt
+// vide) ; la section « Dans l'application » les montre avec un vrai texte alternatif.
+// angle : inclinaison de départ de l'éventail 3D (grand écran, avec mouvement seulement).
+const screens = [
+  {
+    src: homeScreen,
+    title: 'L’accueil',
+    text: 'La série du moment, la reprise de lecture et des recommandations pour vous.',
+    alt: 'Écran d’accueil de Noli : une série mise en avant avec le bouton Regarder, la section Continuer à regarder et des recommandations.',
+    angle: '24',
+    offset: 'md:mt-14',
+  },
+  {
+    src: seriesScreen,
+    title: 'La fiche d’une série',
+    text: 'Les genres, les langues, la note, puis chaque épisode avec sa durée. Un cadenas marque les épisodes premium.',
+    alt: 'Fiche d’une série dans Noli : genres, langues, note, bouton Regarder et liste des épisodes avec leur durée.',
+    angle: '0',
+    offset: '',
+  },
+  {
+    src: exploreScreen,
+    title: 'Explorer',
+    text: 'Cherchez une série, filtrez par genre, et découvrez celles à ne pas manquer.',
+    alt: 'Écran Explorer de Noli : barre de recherche, filtres par genre et séries à ne pas manquer.',
+    angle: '-24',
+    offset: 'md:mt-14',
+  },
+] as const
+
+const screenSizes = '(min-width: 768px) 268px, 236px'
+const screenWidths = [280, 560]
 
 const features = [
   {
@@ -76,16 +113,6 @@ const faqs = [
     answer:
       'Par mobile money ou par carte, via notre partenaire de paiement KkiaPay. Noli ne voit jamais votre numéro de carte.',
   },
-] as const
-
-// Affiches stylisées du téléphone décoratif (dégradés des jetons).
-const posters = [
-  'from-violet to-plum',
-  'from-brand/80 to-plum',
-  'from-plum to-violet/70',
-  'from-violet/80 to-canvas',
-  'from-brand-bright/70 to-violet/60',
-  'from-plum to-brand/60',
 ] as const
 
 // Particules du décor : positions écrites en entier pour que Tailwind génère les classes.
@@ -238,46 +265,31 @@ const plus = 'text-2xl leading-none text-brand transition-transform group-open:r
           <div data-motion="tilt" class="relative">
             <div class="absolute -inset-8 rounded-[3.5rem] bg-brand/15 blur-2xl"></div>
             <div class="relative rounded-[2.75rem] border border-border-mid bg-surface p-2.5 shadow-2xl shadow-black/70 ring-1 ring-violet/30">
-              <div class="relative overflow-hidden rounded-[2.25rem] bg-canvas px-4 pt-3 pb-5">
-                <div
-                  data-motion="scan"
-                  class="pointer-events-none absolute inset-x-0 -top-1/4 z-10 h-1/4 bg-linear-to-b from-transparent via-brand/15 to-transparent"
-                ></div>
-                <div class="mx-auto h-5 w-24 rounded-full bg-surface"></div>
-                <div class="mt-4 flex items-center justify-between">
-                  <span class="font-display text-lg font-extrabold tracking-[-0.03em]">Noli</span>
-                  <span class="size-7 rounded-full bg-surface-high"></span>
-                </div>
-                <div class="relative mt-4 aspect-[16/11] overflow-hidden rounded-2xl bg-linear-to-br from-violet via-plum to-canvas">
-                  <div
-                    data-motion="sheen"
-                    class="absolute inset-y-0 -left-1/2 w-1/3 skew-x-[-20deg] bg-linear-to-r from-transparent via-white/25 to-transparent"
-                  ></div>
-                  <div class="absolute inset-x-0 bottom-0 h-2/3 bg-linear-to-t from-canvas/90 to-transparent"></div>
-                  <div class="absolute right-3 bottom-3 left-3">
-                    <div class="h-2.5 w-28 rounded-full bg-text/90"></div>
-                    <div class="mt-2 h-1.5 w-20 rounded-full bg-text-meta/60"></div>
-                    <div class="mt-3 flex items-center gap-2">
-                      <span class="grid size-7 place-items-center rounded-full bg-brand shadow-[0_0_14px_var(--color-brand)]">
-                        <svg viewBox="0 0 24 24" class="ml-0.5 size-3.5 fill-canvas">
-                          <path d="M8 5v14l11-7z"></path>
-                        </svg>
-                      </span>
-                      <div class="h-1 flex-1 rounded-full bg-text/15">
-                        <div
-                          data-motion="progress"
-                          class="h-1 w-2/5 rounded-full bg-brand shadow-[0_0_8px_var(--color-brand)]"
-                        ></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="mt-5 h-2 w-20 rounded-full bg-text-meta/40"></div>
-                <div class="mt-3 grid grid-cols-3 gap-2">
-                  {posters.map((gradient) => (
-                    <div class={`aspect-[2/3] rounded-xl bg-linear-to-b ${gradient}`} />
+              <div class="relative overflow-hidden rounded-[2.25rem] bg-canvas">
+                <!-- Les trois écrans empilés ; le script les fait défiler (premier seul visible sinon) -->
+                <div class="grid">
+                  {screens.map((screen, index) => (
+                    <Image
+                      src={screen.src}
+                      alt=""
+                      width={560}
+                      widths={screenWidths}
+                      sizes={screenSizes}
+                      loading={index === 0 ? 'eager' : 'lazy'}
+                      fetchpriority={index === 0 ? 'high' : 'auto'}
+                      data-motion="screen"
+                      class={`col-start-1 row-start-1 block h-auto w-full ${index === 0 ? '' : 'opacity-0'}`}
+                    />
                   ))}
                 </div>
+                <div
+                  data-motion="scan"
+                  class="pointer-events-none absolute inset-x-0 -top-1/4 z-10 h-1/4 bg-linear-to-b from-transparent via-brand/20 to-transparent"
+                ></div>
+                <div
+                  data-motion="sheen"
+                  class="pointer-events-none absolute inset-y-0 -left-1/2 z-10 w-1/3 skew-x-[-20deg] bg-linear-to-r from-transparent via-white/15 to-transparent"
+                ></div>
               </div>
             </div>
           </div>
@@ -313,6 +325,71 @@ const plus = 'text-2xl leading-none text-brand transition-transform group-open:r
       )}
     </div>
   </div>
+
+  <!-- Dans l'application : les trois captures en éventail 3D (carrousel sur mobile) -->
+  <section class="relative overflow-hidden">
+    <div
+      aria-hidden="true"
+      class="pointer-events-none absolute top-1/3 left-1/2 size-[56rem] -translate-x-1/2 bg-radial from-violet/20 via-plum/15 to-transparent to-65%"
+    ></div>
+    <div class="relative mx-auto w-full max-w-5xl px-5 py-16 md:py-24">
+      <h2 data-split class="text-3xl md:text-4xl">
+        Dans l’application
+      </h2>
+      <p class="mt-3 max-w-xl text-text-meta">
+        Un aperçu de Noli, tel qu’il s’affiche sur votre téléphone.
+      </p>
+      {/* Zone qui défile sur mobile : elle doit être atteignable au clavier (WCAG 2.1.1). */}
+      {/* eslint-disable astro/jsx-a11y/no-noninteractive-tabindex */}
+      <div
+        role="region"
+        aria-label="Captures d’écran de l’application, faites défiler"
+        tabindex="0"
+        class="-mx-5 mt-12 snap-x snap-mandatory overflow-x-auto px-5 pb-4 md:mx-0 md:overflow-visible md:px-0 md:pb-0"
+      >
+        {/* eslint-enable astro/jsx-a11y/no-noninteractive-tabindex */}
+        <ul
+          data-motion="gallery"
+          class="flex w-max gap-6 md:grid md:w-auto md:grid-cols-3 md:gap-10"
+        >
+          {screens.map((screen, index) => (
+            <li class={`w-60 shrink-0 snap-center md:w-auto ${screen.offset}`}>
+              <figure>
+                <div data-shot data-angle={screen.angle} class="relative mx-auto max-w-72">
+                  <div
+                    aria-hidden="true"
+                    class="absolute -inset-6 hidden rounded-[3.5rem] bg-brand/10 blur-2xl md:block"
+                  ></div>
+                  <div class="relative rounded-[2.75rem] border border-border-mid bg-surface p-2.5 shadow-2xl shadow-black/70 ring-1 ring-violet/30">
+                    <div class="overflow-hidden rounded-[2.25rem] bg-canvas">
+                      <Image
+                        src={screen.src}
+                        alt={screen.alt}
+                        width={560}
+                        widths={screenWidths}
+                        sizes={screenSizes}
+                        class="block h-auto w-full"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <figcaption data-reveal class="mt-8 max-w-72 md:mx-auto">
+                  <span
+                    aria-hidden="true"
+                    class="font-mono text-xs font-semibold tracking-[0.2em] text-brand"
+                  >
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
+                  <h3 class="mt-2 text-xl">{screen.title}</h3>
+                  <p class="mt-2 text-text-meta">{screen.text}</p>
+                </figcaption>
+              </figure>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
 
   <!-- Pourquoi Noli -->
   <section class="border-t border-border">
