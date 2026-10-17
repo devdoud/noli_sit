@@ -1,0 +1,27 @@
+---
+// Gabarit des textes légaux (spec 0002, AC-7) : seul <h1> de la page, date de mise à jour en
+// français, texte dans une colonne prose de 70 caractères au plus.
+import BaseLayout from './BaseLayout.astro'
+import { formatLegalDate } from '../config/site'
+
+interface Props {
+  title: string
+  description: string
+  updatedAt: Date
+}
+
+const { title, description, updatedAt } = Astro.props
+---
+
+<BaseLayout title={title} description={description}>
+  <article class="mx-auto w-full max-w-3xl px-5 py-10 md:py-16">
+    <h1>{title}</h1>
+    <p class="mt-3 text-sm leading-5 text-text-meta">
+      Mis à jour le{' '}
+      <time datetime={updatedAt.toISOString().slice(0, 10)}>{formatLegalDate(updatedAt)}</time>
+    </p>
+    <div class="prose prose-noli mt-8">
+      <slot />
+    </div>
+  </article>
+</BaseLayout>
