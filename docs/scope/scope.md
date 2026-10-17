@@ -17,7 +17,7 @@ Choix déjà faits pour tout le site : aucune mesure d'audience (donc aucun cook
 | 2 | Standards et outillage | Foundation | done |
 | 3 | Charte visuelle et gabarit commun | Foundation | done |
 | 4 | Politique de confidentialité en ligne | Slice 1 | in-progress |
-| 5 | Page suppression de compte | Slice 2 | planned |
+| 5 | Page suppression de compte | Slice 2 | in-progress |
 | 6 | Conditions générales d'utilisation | Slice 3 | planned |
 | 7 | Mentions légales | Slice 4 | planned |
 | 8 | Accueil vitrine | Slice 5 | planned |
@@ -73,10 +73,16 @@ spec [0003](../specs/0003-politique-confidentialite/index.md) · code in `src/co
 
 ## Slice 2: suppression de compte
 
-### 5. Page suppression de compte · needs a decision
+### 5. Page suppression de compte · in-progress
 La page exigée par Google Play : comment supprimer son compte dans l'app ou sans l'app, ce qui est effacé, ce qui est gardé. Les règles viennent de la spec 0010 du backend.
 **Done when:** `https://nollli.com/suppression-compte` explique les deux chemins (dans l'app, ou par email à `support@nollli.com` depuis l'adresse du compte), ce qui est effacé et gardé, la perte du premium sans remboursement, l'email de confirmation et les copies chez les prestataires, en accord avec la spec 0010, et le texte a été relu.
-- [ ] Design it (spec): `/architect page suppression de compte`
+- [x] Design it (spec): `/architect page suppression de compte`
+- [ ] Build it: `/develop page suppression de compte`
+   - [ ] Texte de la page depuis la spec 0010 du backend (AC-1 à AC-10, AC-12)
+   - [ ] Liens : pied de page et politique de confidentialité (AC-11)
+   - [ ] Tests et contrôles de publication dans `verify.md` (AC-1 à AC-11, AC-13)
+- [ ] Verify it: `/check verify page suppression de compte` (dont les conditions de publication, AC-13)
+spec [0004](../specs/0004-page-suppression-compte.md)
 
 ## Slice 3: conditions d'utilisation
 
