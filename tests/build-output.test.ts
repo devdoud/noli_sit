@@ -1,4 +1,4 @@
-// Résultat du build (spec 0001 « Configuration du projet », scope feature 1 « le projet se construit »).
+// Résultat du build : spec 0001 (configuration, CSP) et spec 0002 (gabarit commun).
 // Construit le site une fois dans un dossier temporaire (astro build --outDir) pour ne pas toucher au vrai dist/.
 import { spawnSync } from 'node:child_process'
 import { mkdtemp, readdir, readFile, rm } from 'node:fs/promises'
@@ -6,6 +6,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { footerLinks } from '../src/config/site'
 
 const projectRoot = fileURLToPath(new URL('..', import.meta.url))
 const astroBin = join(projectRoot, 'node_modules', 'astro', 'bin', 'astro.mjs')
@@ -14,6 +15,10 @@ let outDir: string
 let files: string[]
 let indexHtml: string
 let notFoundHtml: string
+let css: string
+
+const between = (html: string, start: string, end: string) =>
+  html.slice(html.indexOf(start), html.indexOf(end) + end.length)
 
 beforeAll(async () => {
   outDir = await mkdtemp(join(tmpdir(), 'noli-build-'))
@@ -28,38 +33,27 @@ beforeAll(async () => {
   files = (await readdir(outDir, { recursive: true })).map((file) => file.replaceAll('\\', '/'))
   indexHtml = await readFile(join(outDir, 'index.html'), 'utf8')
   notFoundHtml = await readFile(join(outDir, '404.html'), 'utf8')
+  const cssFiles = files.filter((file) => file.startsWith('_astro/') && file.endsWith('.css'))
+  css = (await Promise.all(cssFiles.map((file) => readFile(join(outDir, file), 'utf8')))).join('\n')
 }, 120_000)
 
 afterAll(async () => {
   if (outDir) await rm(outDir, { recursive: true, force: true })
 })
 
-describe('build output', () => {
+const pages = [
+  ['home page', () => indexHtml],
+  ['404 page', () => notFoundHtml],
+] as const
+
+describe('build output (spec 0001)', () => {
   it('produces the home page and the 404 page as flat .html files', () => {
     expect(files).toContain('index.html')
     expect(files).toContain('404.html')
     expect(files.some((file) => file.endsWith('/index.html') && file !== 'index.html')).toBe(false)
   })
 
-  it('marks every page as French', () => {
-    expect(indexHtml).toContain('<html lang="fr"')
-    expect(notFoundHtml).toContain('<html lang="fr"')
-  })
-
-  it('gives the home page a title and a description', () => {
-    expect(indexHtml).toMatch(/<title>Noli<\/title>/)
-    expect(indexHtml).toMatch(/<meta name="description" content="[^"]+"/)
-  })
-
-  it('gives the 404 page its own title and a link back home', () => {
-    expect(notFoundHtml).toContain('<title>Page introuvable · Noli</title>')
-    expect(notFoundHtml).toMatch(/<a [^>]*href="\/"[^>]*>Retour à l'accueil<\/a>/)
-  })
-
-  it.each([
-    ['home page', () => indexHtml],
-    ['404 page', () => notFoundHtml],
-  ])('keeps the %s free of inline script, style and data: resources', (_name, html) => {
+  it.each(pages)('keeps the %s free of inline script, style and data: resources', (_n, html) => {
     const page = html()
     expect(page).not.toMatch(/<script\b/i)
     expect(page).not.toMatch(/<style\b/i)
@@ -79,9 +73,133 @@ describe('build output', () => {
     expect(files.filter((file) => file.endsWith('.js'))).toEqual([])
   })
 
-  it('carries the brand color from the app into the CSS', async () => {
-    const cssFile = files.find((file) => file.startsWith('_astro/') && file.endsWith('.css'))
-    const css = await readFile(join(outDir, cssFile ?? ''), 'utf8')
+  it('carries the brand color from the app into the CSS', () => {
     expect(css).toContain('--color-brand:#f5a623')
+  })
+})
+
+describe('head (spec 0002, covers: AC-2)', () => {
+  it.each(pages)('marks the %s as French and dark', (_n, html) => {
+    const page = html()
+    expect(page).toContain('<html lang="fr"')
+    expect(page).toContain('<meta name="color-scheme" content="dark">')
+    expect(page).toContain('<meta name="theme-color" content="#0B0C10">')
+  })
+
+  it.each(pages)('links both favicons on the %s, and the files exist', (_n, html) => {
+    const page = html()
+    expect(page).toContain(
+      '<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">',
+    )
+    expect(page).toContain('<link rel="apple-touch-icon" href="/apple-touch-icon.png">')
+    expect(files).toContain('favicon-32.png')
+    expect(files).toContain('apple-touch-icon.png')
+  })
+
+  it.each(pages)('gives the %s a non empty description', (_n, html) => {
+    expect(html()).toMatch(/<meta name="description" content="[^"]+"/)
+  })
+
+  it('titles the home page with the site name alone', () => {
+    expect(indexHtml).toContain('<title>Noli</title>')
+  })
+
+  it('titles the 404 page with its name and the site name', () => {
+    expect(notFoundHtml).toContain('<title>Page introuvable · Noli</title>')
+  })
+
+  it('gives the home page its canonical address', () => {
+    expect(indexHtml).toContain('<link rel="canonical" href="https://nollli.com/">')
+  })
+
+  it('gives the 404 page no canonical address', () => {
+    expect(notFoundHtml).not.toContain('rel="canonical"')
+  })
+})
+
+describe('template (spec 0002)', () => {
+  it.each(pages)('opens the %s body with the skip link to #contenu (covers: AC-3)', (_n, html) => {
+    const body = html().slice(html().indexOf('<body'))
+    const firstLink = /<a\b[^>]*>/.exec(body)?.[0] ?? ''
+    expect(firstLink).toContain('href="#contenu"')
+    expect(body).toMatch(/<a [^>]*href="#contenu"[^>]*>Aller au contenu<\/a>/)
+    expect(body).toContain('<main id="contenu" tabindex="-1">')
+  })
+
+  it.each(pages)('puts the header, main and footer on the %s (covers: AC-11)', (_n, html) => {
+    const page = html()
+    expect(page).toContain('<header')
+    expect(page).toContain('<main')
+    expect(page).toContain('<footer')
+  })
+
+  it('links the logo and the word Noli to the home page, with a decorative icon (covers: AC-4)', () => {
+    const header = between(indexHtml, '<header', '</header>')
+    const link = /<a [^>]*href="\/"[^>]*>(.*?)<\/a>/s.exec(header)?.[1] ?? ''
+    expect(link).toMatch(/<img [^>]*\balt(=""|\s|>)/)
+    expect(link.replace(/<[^>]+>/g, '').trim()).toBe('Noli')
+  })
+
+  it('shows the support address and the build year in the footer (covers: AC-5)', () => {
+    const footer = between(indexHtml, '<footer', '</footer>')
+    expect(footer).toMatch(/<a [^>]*href="mailto:support@nollli.com"/)
+    expect(footer).toContain(`© ${String(new Date().getFullYear())} Noli`)
+  })
+
+  it('renders the legal nav only when footer links exist, one link per entry (covers: AC-5)', () => {
+    const footer = between(indexHtml, '<footer', '</footer>')
+    if (footerLinks.length === 0) {
+      expect(footer).not.toContain('<nav')
+      return
+    }
+    const nav = between(footer, '<nav', '</nav>')
+    expect(nav).toContain('aria-label="Liens légaux"')
+    expect([...nav.matchAll(/<a /g)].length).toBe(footerLinks.length)
+    for (const entry of footerLinks) expect(nav).toContain(`href="${entry.href}"`)
+  })
+
+  it('only lists footer links whose page is built (covers: AC-5)', () => {
+    for (const entry of footerLinks) {
+      expect(files).toContain(`${entry.href.slice(1)}.html`)
+    }
+  })
+
+  it('shows both stores as coming soon, with no link and no ARIA state (covers: AC-6)', () => {
+    const footer = between(indexHtml, '<footer', '</footer>')
+    const list = between(footer, '<ul class="flex flex-wrap gap-3">', '</ul>')
+    const items = [...list.matchAll(/<li>(.*?)<\/li>/gs)].map((m) => m[1])
+    expect(items).toHaveLength(2)
+    expect(items[0]).toContain('Google Play')
+    expect(items[1]).toContain('App Store')
+    for (const item of items) {
+      expect(item).toContain('Bientôt disponible')
+      expect(item).not.toMatch(/<a\b|href=|tabindex|aria-/)
+    }
+  })
+})
+
+describe('resources (spec 0002, covers: AC-8)', () => {
+  it('serves the two fonts as woff2 files under /_astro/', () => {
+    const fonts = files.filter((file) => file.startsWith('_astro/') && file.endsWith('.woff2'))
+    expect(fonts.some((file) => file.includes('bricolage-grotesque-latin-wght'))).toBe(true)
+    expect(fonts.some((file) => file.includes('plus-jakarta-sans-latin-wght'))).toBe(true)
+  })
+
+  it('loads every font from the site itself', () => {
+    const urls = [...css.matchAll(/url\(([^)]+)\)/g)].map((m) => m[1])
+    expect(urls.length).toBeGreaterThan(0)
+    for (const url of urls) expect(url).toMatch(/^\/_astro\//)
+  })
+
+  it.each(pages)('only points the %s at nollli.com or mailto', (_n, html) => {
+    const absolute = [...html().matchAll(/(?:href|src)="([a-z]+:[^"]*)"/g)].map((m) => m[1])
+    for (const url of absolute) expect(url).toMatch(/^(https:\/\/nollli\.com(\/|$)|mailto:)/)
+  })
+
+  it('keeps the CSS free of other domains and data: resources', () => {
+    // Les commentaires (licence de Tailwind) citent des URL sans rien charger.
+    const rules = css.replace(/\/\*[\s\S]*?\*\//g, '')
+    expect(rules).not.toMatch(/https?:\/\/(?!nollli\.com)/)
+    expect(rules).not.toContain('data:')
   })
 })
