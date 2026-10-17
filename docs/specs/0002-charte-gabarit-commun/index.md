@@ -102,7 +102,7 @@ Pas de jeton de rayon : le gabarit n'utilise que `rounded-full` (boutons, `NRadi
 - `@media (prefers-reduced-motion: reduce)` : transitions coupées.
 
 **Mise en page** :
-- Conteneur du haut, du contenu et du pied de page : `mx-auto w-full max-w-3xl px-5`.
+- Conteneur du haut, du contenu et du pied de page : `mx-auto w-full max-w-5xl px-5` (élargi le 2026-10-17 pour l'accueil, spec 0006).
 - Haut de page : fond `--color-surface`, bordure basse `--color-border`, `min-h-14`, lien logo en `inline-flex min-h-11 items-center gap-3`, « Noli » en `--font-display` 700 20 px.
 - Contenu : `py-10 md:py-16`.
 - Pied de page : fond `--color-surface`, bordure haute `--color-border`, `py-10`, texte 14/20 px en `--color-text-meta` ; blocs empilés sur mobile, deux colonnes à partir de `md` (liens légaux et support à gauche, boutons stores à droite), copyright en dernier sur toute la largeur. Liens en `inline-flex min-h-11 items-center underline underline-offset-4`, couleur `--color-text`, survol `--color-brand-bright`.

@@ -98,9 +98,11 @@ describe('head (spec 0002, covers: AC-2)', () => {
 
   it.each(pages)('links both favicons on the %s, and the files exist', (_n, html) => {
     const page = html()
+    expect(page).toContain('<link rel="icon" type="image/svg+xml" href="/favicon.svg">')
     expect(page).toContain(
       '<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">',
     )
+    expect(files).toContain('favicon.svg')
     expect(page).toContain('<link rel="apple-touch-icon" href="/apple-touch-icon.png">')
     expect(files).toContain('favicon-32.png')
     expect(files).toContain('apple-touch-icon.png')
@@ -143,11 +145,11 @@ describe('template (spec 0002)', () => {
     expect(page).toContain('<footer')
   })
 
-  it('links the logo and the word Noli to the home page, with a decorative icon (covers: AC-4)', () => {
+  it('links the word Noli alone to the home page, with no image (covers: AC-4)', () => {
     const header = between(indexHtml, '<header', '</header>')
     const link = /<a [^>]*href="\/"[^>]*>(.*?)<\/a>/s.exec(header)?.[1] ?? ''
-    expect(link).toMatch(/<img [^>]*\balt(=""|\s|>)/)
-    expect(link.replace(/<[^>]+>/g, '').trim()).toBe('Noli')
+    expect(link.trim()).toBe('Noli')
+    expect(header).not.toContain('<img')
   })
 
   it('shows the support address and the build year in the footer (covers: AC-5)', () => {
@@ -306,7 +308,7 @@ describe('privacy policy page (spec 0003)', () => {
   it('links only to pages that are built', () => {
     const internal = [...privacyHtml.matchAll(/href="(\/[^"#]*)"/g)].map((m) => m[1])
     for (const href of internal) {
-      if (href === '/' || href.startsWith('/_astro/') || /\.(png|css)$/.test(href)) continue
+      if (href === '/' || href.startsWith('/_astro/') || /\.(png|svg|css)$/.test(href)) continue
       expect(files).toContain(`${href.slice(1)}.html`)
     }
   })
@@ -395,4 +397,60 @@ describe('account deletion page (spec 0004)', () => {
       expect(footer).toContain('href="/suppression-compte"')
     },
   )
+})
+
+describe('home page (spec 0006)', () => {
+  const text = () => indexHtml.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ')
+
+  it('has one h1 and the sections in the spec order (covers: AC-1)', () => {
+    expect([...indexHtml.matchAll(/<h1\b/g)]).toHaveLength(1)
+    const headings = [...indexHtml.matchAll(/<h2[^>]*>\s*(.*?)\s*<\/h2>/gs)].map((m) =>
+      m[1].replace(/\s+/g, ' '),
+    )
+    expect(headings).toEqual([
+      'Pourquoi Noli',
+      'Comment ça marche',
+      'Gratuit ou Premium',
+      'Questions fréquentes',
+      'Noli arrive bientôt sur votre téléphone.',
+    ])
+  })
+
+  it('shows the store buttons in the hero, the final call and the footer (covers: AC-1)', () => {
+    expect([...indexHtml.matchAll(/<ul class="flex flex-wrap gap-3">/g)]).toHaveLength(3)
+  })
+
+  it('answers five questions with native details, no script (covers: AC-3)', () => {
+    expect([...indexHtml.matchAll(/<details\b/g)]).toHaveLength(5)
+    expect([...indexHtml.matchAll(/<summary\b/g)]).toHaveLength(5)
+    expect(indexHtml).toMatch(/<a href="\/confidentialite"[^>]*>politique de confidentialité<\/a>/)
+    expect(indexHtml).toMatch(
+      /<a href="\/suppression-compte"[^>]*>Supprimer votre compte Noli<\/a>/,
+    )
+  })
+
+  it.each([
+    '30 jours',
+    'renouvellement automatique',
+    'KkiaPay',
+    'mobile money',
+    'Prix affiché dans l’application',
+    'Aucune publicité',
+    'Google Play',
+    'App Store',
+  ])('states the fact « %s » (covers: AC-2)', (phrase) => {
+    expect(text()).toContain(phrase)
+  })
+
+  it('promises no price, currency or release date (covers: AC-2)', () => {
+    expect(text()).not.toMatch(/\d[\d\s.,]*\s?(FCFA|XOF|NGN|€|\$)/)
+    expect(text()).not.toMatch(
+      /\b(janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre)\b/i,
+    )
+    expect(text()).not.toContain('dès leur sortie')
+  })
+
+  it('loads no image in the page body (covers: AC-4)', () => {
+    expect(between(indexHtml, '<main', '</main>')).not.toContain('<img')
+  })
 })

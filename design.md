@@ -4,7 +4,7 @@ source: extracted-from-code (design system v2 de l'app, `noli_app/lib/core/theme
 
 ## Character
 
-Le site est le prolongement de l'app : sombre, chaleureux, sobre. Fond obsidienne, ambre safran pour tout ce qui se clique, titres en Bricolage Grotesque, texte en Plus Jakarta Sans. Le site sert surtout à rassurer (pages légales, contact) : il reste calme et lisible. L'ambre est rare et donc parlant. Pas de violet, pas de dégradé, pas d'effet de verre dans le gabarit ; l'accueil (feature 8) pourra en ajouter, avec sa propre spec.
+Le site est le prolongement de l'app : sombre, chaleureux, sobre. Fond obsidienne, ambre safran pour tout ce qui se clique, titres en Bricolage Grotesque, texte en Plus Jakarta Sans. Le site sert surtout à rassurer (pages légales, contact) : il reste calme et lisible. L'ambre est rare et donc parlant. Pas de violet, pas de dégradé, pas d'effet de verre dans le gabarit. L'accueil (spec 0006) a une ambiance « cinéma » : halo prune et violet derrière le bandeau, téléphone et affiches dessinés en CSS.
 
 ## Build mandate
 
@@ -29,6 +29,8 @@ Les valeurs vivent dans `src/styles/global.css` (`@theme`). Ce tableau reprend e
 | `--color-brand-bright` | `#ffb830` | survol des liens et boutons |
 | `--color-text` | `#f8f9fa` | titres et texte courant |
 | `--color-text-meta` | `#a0a3bd` | texte secondaire, date, copyright |
+| `--color-plum` | `#1e1a2e` | accueil seulement : halo et surfaces atmosphériques (`NColors.plum`) |
+| `--color-violet` | `#6c5ce7` | accueil seulement : halo, accents décoratifs, jamais du texte (`NColors.secondary`) |
 | `--font-display` | `'Bricolage Grotesque Variable', system-ui, sans-serif` | titres, mot « Noli » |
 | `--font-sans` | `'Plus Jakarta Sans Variable', system-ui, sans-serif` | tout le reste |
 
@@ -47,7 +49,7 @@ Polices servies par le site via `@fontsource-variable/*` (woff2 dans `/_astro/`)
 
 ## Layout
 
-- Conteneur : `mx-auto w-full max-w-3xl px-5` (marge de 20 px, comme `NSpacing.screen`).
+- Conteneur : `mx-auto w-full max-w-5xl px-5` (marge de 20 px, comme `NSpacing.screen`) pour le haut de page, le pied de page et toutes les pages.
 - Contenu : `py-10 md:py-16`. Textes longs : colonne de 70 caractères au plus.
 - `body` en colonne sur toute la hauteur : le pied de page reste en bas sur une page courte.
 - Pied de page : empilé sur mobile, deux colonnes à partir de `md` (liens et support à gauche, stores à droite), copyright en dernier.
@@ -58,7 +60,7 @@ Polices servies par le site via `@fontsource-variable/*` (woff2 dans `/_astro/`)
 |---|---|---|
 | `BaseLayout` | `head` complet (titre par `pageTitle`, description, canonical par `canonicalPath` sauf 404, `color-scheme`, `theme-color`, favicons), lien d'évitement, haut de page, `main`, pied de page | lien d'évitement caché, visible au focus |
 | `LegalLayout` | `h1`, « Mis à jour le … » (`formatLegalDate`, UTC), texte en `prose prose-noli` | — |
-| `SiteHeader` | icône 32 px (`alt=""`) et « Noli », un seul lien vers `/` | survol, focus |
+| `SiteHeader` | le mot « Noli » seul (point ambre décoratif), un seul lien vers `/` | survol, focus |
 | `SiteFooter` | nav « Liens légaux » (seulement si `footerLinks` n'est pas vide), mailto support, boutons stores, `© <année> Noli` | liens soulignés, survol `--color-brand-bright` |
 | `StoreButtons` | liste de deux items, Google Play puis App Store | bientôt disponible : élément simple, sans lien ni état ARIA, nom du store + « Bientôt disponible » ; disponible : lien ambre « Télécharger sur … » |
 

@@ -110,12 +110,12 @@ Qui édite le site et qui l'héberge, comme on l'attend dans les pays francophon
 Une vitrine courte qui donne envie d'installer Noli : logo, phrase d'accroche, 3 ou 4 atouts, captures de l'app, boutons stores.
 **Done when:** `https://nollli.com/` présente Noli avec ses atouts et des captures, les boutons Google Play et App Store affichent « Bientôt disponible » et se remplacent en un seul endroit par les vrais liens, et la page charge vite sur une connexion mobile lente.
 - [x] Design it (spec): `/architect accueil vitrine`
-- [ ] Build it: `/develop accueil vitrine`
-   - [ ] Jetons, bandeau et visuels CSS (AC-1, AC-4 à AC-6)
-   - [ ] Sections et textes (AC-1 à AC-3)
-   - [ ] Tests et contrôle navigateur (AC-1 à AC-6)
+- [x] Build it: `/develop accueil vitrine`
+   - [x] Jetons, bandeau et visuels CSS (AC-1, AC-4 à AC-6)
+   - [x] Sections et textes (AC-1 à AC-3)
+   - [x] Tests et contrôle navigateur (AC-1 à AC-6)
 - [ ] Verify it: `/check verify accueil vitrine`
-spec [0006](../specs/0006-accueil-vitrine.md)
+spec [0006](../specs/0006-accueil-vitrine.md) · code in `src/pages/index.astro`, `src/components/SiteHeader.astro`, `scripts/make-icons.mjs`, `public/favicon.svg`
 
 ## Slice 6: contact et aide
 

@@ -1,7 +1,7 @@
 # 0006. Accueil vitrine
 
 **Date**: 2026-10-17
-**Status**: Proposed
+**Status**: In Progress
 
 ## Summary
 

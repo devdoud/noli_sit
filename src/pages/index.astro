@@ -1,14 +1,327 @@
 ---
-// Accueil provisoire du socle. La vraie vitrine arrive avec la feature 8.
+// Accueil vitrine (spec 0006) : bandeau, atouts, étapes, offres, questions, rappel final.
+// Visuels décoratifs en CSS seulement (aria-hidden), aucun JavaScript, aucune image.
 import BaseLayout from '../layouts/BaseLayout.astro'
-import { site } from '../config/site'
+import StoreButtons from '../components/StoreButtons.astro'
+import { routes } from '../config/site'
+
+const features = [
+  {
+    title: 'Commencez gratuitement',
+    text: 'Des séries entières sont gratuites, et certaines séries premium offrent leurs premiers épisodes.',
+    icon: 'M8 5v14l11-7z',
+  },
+  {
+    title: 'Reprenez où vous en étiez',
+    text: 'Noli garde votre progression : chaque épisode reprend là où vous l’aviez laissé.',
+    icon: 'M12 5V2L7 6l5 4V7a6 6 0 1 1-6 6H4a8 8 0 1 0 8-8z',
+  },
+  {
+    title: 'Sans engagement',
+    text: 'Le premium se prend pour 30 jours, par mobile money ou par carte. Pas de renouvellement automatique : vous décidez.',
+    icon: 'M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z',
+  },
+] as const
+
+const steps = [
+  { title: 'Téléchargez Noli', text: 'Bientôt disponible sur Google Play et sur l’App Store.' },
+  {
+    title: 'Créez votre compte',
+    text: 'Une adresse email, un nom d’utilisateur et un mot de passe : c’est tout.',
+  },
+  {
+    title: 'Regardez',
+    text: 'Lancez une série gratuite tout de suite, ou passez au premium pour tout voir.',
+  },
+] as const
+
+const plans = [
+  {
+    name: 'Gratuit',
+    tagline: 'Pour découvrir Noli',
+    highlight: false,
+    items: [
+      'Les séries gratuites, en entier',
+      'Les épisodes offerts des séries premium',
+      'La reprise de lecture',
+      'Aucune publicité',
+    ],
+  },
+  {
+    name: 'Premium',
+    tagline: 'Prix affiché dans l’application',
+    highlight: true,
+    items: [
+      'Tous les épisodes de toutes les séries',
+      '30 jours d’accès par paiement',
+      'Mobile money ou carte, via KkiaPay',
+      'Pas de renouvellement automatique',
+    ],
+  },
+] as const
+
+const faqs = [
+  {
+    question: 'Quand sort l’application ?',
+    answer:
+      'Noli arrive bientôt sur Google Play et sur l’App Store. Les boutons de cette page vous y mèneront dès sa sortie.',
+  },
+  {
+    question: 'Combien coûte le premium ?',
+    answer:
+      'Le prix d’une période de 30 jours est affiché dans l’application avant tout paiement. Vous ne payez qu’après l’avoir confirmé.',
+  },
+  {
+    question: 'Comment payer ?',
+    answer:
+      'Par mobile money ou par carte, via notre partenaire de paiement KkiaPay. Noli ne voit jamais votre numéro de carte.',
+  },
+] as const
+
+// Affiches stylisées du téléphone décoratif (dégradés des jetons).
+const posters = [
+  'from-violet to-plum',
+  'from-brand/80 to-plum',
+  'from-plum to-violet/70',
+  'from-violet/80 to-canvas',
+  'from-brand-bright/70 to-violet/60',
+  'from-plum to-brand/60',
+] as const
+
+const link = 'text-brand underline underline-offset-4 hover:text-brand-bright'
+const summary =
+  'flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 px-6 py-4 font-semibold [&::-webkit-details-marker]:hidden'
+const plus = 'text-2xl leading-none text-brand transition-transform group-open:rotate-45'
 ---
 
-<BaseLayout description="Noli, le streaming de séries pour l'Afrique de l'Ouest francophone. Bientôt disponible.">
-  <div class="mx-auto w-full max-w-3xl px-5 py-10 md:py-16">
-    <h1 class="text-brand">{site.name}</h1>
-    <p class="mt-4 text-text-meta">
-      Le streaming de séries pour l'Afrique de l'Ouest francophone. Bientôt disponible.
-    </p>
-  </div>
+<BaseLayout description="Noli, le streaming de séries pour l'Afrique de l'Ouest francophone. Gratuit pour commencer, sans publicité. Bientôt sur Android et iOS.">
+  <!-- Bandeau -->
+  <section class="relative overflow-hidden">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0">
+      <div class="absolute -top-64 -right-64 size-[60rem] bg-radial from-violet/25 via-plum/20 to-transparent to-70%"></div>
+      <div class="absolute top-24 -left-72 size-[44rem] bg-radial from-brand/12 to-transparent to-65%"></div>
+    </div>
+
+    <div class="relative mx-auto grid w-full max-w-5xl gap-14 px-5 py-16 md:grid-cols-[1.15fr_0.85fr] md:items-center md:py-24">
+      <div>
+        <p class="inline-flex items-center gap-2 rounded-full border border-border-mid bg-surface/60 px-3 py-1 text-xs font-semibold tracking-[0.08em] text-text-meta uppercase">
+          <span class="size-1.5 rounded-full bg-brand" aria-hidden="true"></span>
+          Bientôt sur Android et iOS
+        </p>
+        <h1 class="mt-6 text-[2.75rem] leading-[1.02] font-extrabold tracking-[-0.035em] md:text-[3.5rem] lg:text-[4.25rem]">
+          Vos séries,
+          <br />
+          <span class="text-brand lg:whitespace-nowrap">dans votre poche.</span>
+        </h1>
+        <p class="mt-6 max-w-xl text-lg leading-8 text-text-meta">
+          Noli, c’est le streaming de séries pensé pour l’Afrique de l’Ouest francophone. Commencez
+          gratuitement, reprenez là où vous vous êtes arrêté, passez au premium quand vous voulez.
+        </p>
+        <div class="mt-8">
+          <StoreButtons />
+        </div>
+        <p class="mt-5 text-sm text-text-meta">Gratuit pour commencer · Sans publicité</p>
+      </div>
+
+      <!-- Téléphone décoratif -->
+      <div aria-hidden="true" class="relative mx-auto w-64 md:w-72">
+        <div class="absolute -inset-8 rounded-[3.5rem] bg-brand/10 blur-2xl"></div>
+        <div class="relative rounded-[2.75rem] border border-border-mid bg-surface p-2.5 shadow-2xl shadow-black/70">
+          <div class="overflow-hidden rounded-[2.25rem] bg-canvas px-4 pt-3 pb-5">
+            <div class="mx-auto h-5 w-24 rounded-full bg-surface"></div>
+            <div class="mt-4 flex items-center justify-between">
+              <span class="font-display text-lg font-extrabold tracking-[-0.03em]">Noli</span>
+              <span class="size-7 rounded-full bg-surface-high"></span>
+            </div>
+            <div class="relative mt-4 aspect-[16/11] overflow-hidden rounded-2xl bg-linear-to-br from-violet via-plum to-canvas">
+              <div class="absolute inset-x-0 bottom-0 h-2/3 bg-linear-to-t from-canvas/90 to-transparent"></div>
+              <div class="absolute right-3 bottom-3 left-3">
+                <div class="h-2.5 w-28 rounded-full bg-text/90"></div>
+                <div class="mt-2 h-1.5 w-20 rounded-full bg-text-meta/60"></div>
+                <div class="mt-3 flex items-center gap-2">
+                  <span class="grid size-7 place-items-center rounded-full bg-brand">
+                    <svg viewBox="0 0 24 24" class="ml-0.5 size-3.5 fill-canvas">
+                      <path d="M8 5v14l11-7z"></path>
+                    </svg>
+                  </span>
+                  <div class="h-1 flex-1 rounded-full bg-text/15">
+                    <div class="h-1 w-2/5 rounded-full bg-brand"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="mt-5 h-2 w-20 rounded-full bg-text-meta/40"></div>
+            <div class="mt-3 grid grid-cols-3 gap-2">
+              {posters.map((gradient) => (
+                <div class={`aspect-[2/3] rounded-xl bg-linear-to-b ${gradient}`} />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pourquoi Noli -->
+  <section class="border-t border-border">
+    <div class="mx-auto w-full max-w-5xl px-5 py-16 md:py-24">
+      <h2 class="text-3xl md:text-4xl">Pourquoi Noli</h2>
+      <p class="mt-3 max-w-xl text-text-meta">Une application simple, faite pour regarder.</p>
+      <ul class="mt-10 grid gap-4 md:grid-cols-3">
+        {features.map((feature) => (
+          <li class="rounded-2xl border border-border bg-surface p-6">
+            <span
+              aria-hidden="true"
+              class="grid size-11 place-items-center rounded-xl bg-brand/10 ring-1 ring-brand/25"
+            >
+              <svg viewBox="0 0 24 24" class="size-5 fill-brand">
+                <path d={feature.icon} />
+              </svg>
+            </span>
+            <h3 class="mt-5 text-xl">{feature.title}</h3>
+            <p class="mt-2 text-text-meta">{feature.text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Comment ça marche -->
+  <section class="border-t border-border bg-surface/40">
+    <div class="mx-auto w-full max-w-5xl px-5 py-16 md:py-24">
+      <h2 class="text-3xl md:text-4xl">Comment ça marche</h2>
+      <ol class="mt-10 grid gap-10 md:grid-cols-3 md:gap-8">
+        {steps.map((step, index) => (
+          <li>
+            <span
+              aria-hidden="true"
+              class="font-display text-5xl font-extrabold tracking-[-0.04em] text-brand/90"
+            >
+              {String(index + 1).padStart(2, '0')}
+            </span>
+            <h3 class="mt-3 text-xl">{step.title}</h3>
+            <p class="mt-2 text-text-meta">{step.text}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- Gratuit ou Premium -->
+  <section class="border-t border-border">
+    <div class="mx-auto w-full max-w-5xl px-5 py-16 md:py-24">
+      <h2 class="text-3xl md:text-4xl">Gratuit ou Premium</h2>
+      <p class="mt-3 max-w-xl text-text-meta">
+        Commencez sans payer. Passez au premium quand une série vous accroche.
+      </p>
+      <div class="mt-10 grid gap-4 md:grid-cols-2">
+        {plans.map((plan) => (
+          <article
+            class={`relative rounded-3xl border p-7 ${plan.highlight ? 'border-brand/60 bg-linear-to-b from-plum to-surface' : 'border-border bg-surface'}`}
+          >
+            {plan.highlight && (
+              <p class="absolute -top-3 right-6 rounded-full bg-brand px-3 py-1 text-xs font-bold text-canvas">
+                Tout le catalogue
+              </p>
+            )}
+            <h3 class="text-2xl">{plan.name}</h3>
+            <p class="mt-1 text-sm text-text-meta">{plan.tagline}</p>
+            <ul class="mt-6 space-y-3">
+              {plan.items.map((item) => (
+                <li class="flex gap-3">
+                  <svg
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                    class="mt-0.5 size-5 shrink-0 fill-brand"
+                  >
+                    <path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z" />
+                  </svg>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </article>
+        ))}
+      </div>
+      <p class="mt-6 text-sm text-text-meta">
+        Le paiement ouvrira avec l’application. Le prix est toujours affiché avant de payer.
+      </p>
+    </div>
+  </section>
+
+  <!-- Questions fréquentes -->
+  <section class="border-t border-border bg-surface/40">
+    <div class="mx-auto w-full max-w-5xl px-5 py-16 md:py-24">
+      <h2 class="text-3xl md:text-4xl">Questions fréquentes</h2>
+      <div class="mt-10 divide-y divide-border rounded-2xl border border-border bg-surface">
+        {faqs.map((faq) => (
+          <details class="group">
+            <summary class={summary}>
+              {faq.question}
+              <span aria-hidden="true" class={plus}>
+                +
+              </span>
+            </summary>
+            <p class="px-6 pb-5 text-text-meta">{faq.answer}</p>
+          </details>
+        ))}
+        <details class="group">
+          <summary class={summary}>
+            Et la publicité ?
+            <span aria-hidden="true" class={plus}>
+              +
+            </span>
+          </summary>
+          <p class="px-6 pb-5 text-text-meta">
+            Il n’y en a pas. Noli ne diffuse aucune publicité et ne revend pas vos données. Tout est
+            expliqué dans la{' '}
+            <a href={routes.privacy} class={link}>
+              politique de confidentialité
+            </a>
+            .
+          </p>
+        </details>
+        <details class="group">
+          <summary class={summary}>
+            Comment supprimer mon compte ?
+            <span aria-hidden="true" class={plus}>
+              +
+            </span>
+          </summary>
+          <p class="px-6 pb-5 text-text-meta">
+            Depuis l’application, ou par email sans l’application. Toutes les étapes sont sur la
+            page
+            <a href={routes.accountDeletion} class={link}>
+              Supprimer votre compte Noli
+            </a>
+            .
+          </p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- Rappel final -->
+  <section class="border-t border-border">
+    <div class="mx-auto w-full max-w-5xl px-5 py-16 md:py-24">
+      <div class="relative overflow-hidden rounded-3xl border border-border-mid bg-linear-to-br from-plum via-surface to-canvas px-6 py-12 md:px-12 md:py-16">
+        <div
+          aria-hidden="true"
+          class="pointer-events-none absolute -right-24 -bottom-24 size-80 rounded-full bg-brand/15 blur-3xl"
+        ></div>
+        <div class="relative max-w-2xl">
+          <h2 class="text-3xl md:text-5xl md:leading-[1.05]">
+            Noli arrive bientôt sur votre téléphone.
+          </h2>
+          <p class="mt-4 text-lg text-text-meta">
+            Dès la sortie, téléchargez l’application et lancez votre première série. C’est gratuit
+            pour commencer.
+          </p>
+          <div class="mt-8">
+            <StoreButtons />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 </BaseLayout>

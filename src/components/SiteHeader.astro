@@ -1,17 +1,14 @@
 ---
-// Haut de page (spec 0002) : l'icône de l'app et le mot « Noli », un seul lien vers l'accueil.
-import { Image } from 'astro:assets'
-import logo from '../assets/noli-logo.png'
+// Haut de page (spec 0002, AC-4) : le mot « Noli » seul, en lien vers l'accueil.
 import { routes, site } from '../config/site'
 ---
 
 <header class="border-b border-border bg-surface">
-  <div class="mx-auto flex min-h-14 w-full max-w-3xl items-center px-5">
+  <div class="mx-auto flex min-h-14 w-full max-w-5xl items-center px-5">
     <a
       href={routes.home}
-      class="inline-flex min-h-11 items-center gap-3 font-display text-xl font-bold tracking-[-0.02em] text-text"
+      class="inline-flex min-h-11 items-center font-display text-2xl font-extrabold tracking-[-0.03em] text-text transition-colors hover:text-brand-bright"
     >
-      <Image src={logo} alt="" width={64} height={64} class="size-8" loading="eager" />
       {site.name}
     </a>
   </div>
