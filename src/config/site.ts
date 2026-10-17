@@ -27,16 +27,16 @@ export const publisher: {
   readonly address: string
   readonly country: string
 } = {
-  name: '',
-  legalForm: '',
-  address: '',
-  country: '',
+  name: 'Nollli Studio',
+  legalForm: 'SARL',
+  address: 'Cotonou',
+  country: 'Bénin',
 }
 
 // Région de la base de données (MongoDB Atlas) et de l'API (Render), visible dans leurs
 // tableaux de bord. Ex. 'Union européenne (Francfort, Allemagne)'. Balise {{hebergement.region}}.
 export const dataHosting: { readonly region: string } = {
-  region: '',
+  region: 'Europe',
 }
 
 // Liens du pied de page : seulement les pages déjà construites. Chaque feature de page ajoute sa
