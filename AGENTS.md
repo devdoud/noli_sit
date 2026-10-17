@@ -22,6 +22,8 @@ npm run dev       # Dev server (http://localhost:4321)
 npm run build     # astro check + astro build + contrôle CSP (scripts/check-no-inline.mjs)
 npm test          # Vitest (environ 80 s : un test reconstruit le site)
 npm run check     # Types seulement
+npm run lint      # ESLint (lint:fix pour corriger)
+npm run format    # Prettier (format:check pour vérifier sans écrire)
 ```
 
 ## Specs
@@ -42,7 +44,7 @@ Stored in `docs/specs/`. Format: `docs/specs/NNNN-title.md` (ou `NNNN-title/inde
 
 ## Tooling
 
-À installer par `/develop tooling` : ESLint (`eslint-plugin-astro`, `eslint-plugin-jsx-a11y`) + Prettier (`prettier-plugin-astro`), scripts `lint` et `format`, Husky + lint-staged avant commit (ESLint + Prettier sur les fichiers modifiés, puis `astro check` ; les tests restent hors du commit). Pas de CI pour l'instant : Render refuse déjà un build cassé.
+Installé : ESLint 9 (`eslint.config.js` : TypeScript strict typé sur les `.ts`, `eslint-plugin-astro` + règles `jsx-a11y` sur les `.astro` ; ESLint 10 attend le support de `eslint-plugin-jsx-a11y`) + Prettier (`.prettierrc.json`, sans point virgule, guillemets simples, 100 colonnes, `prettier-plugin-astro` ; `docs/` et `*.md` ignorés), Husky + lint-staged avant commit (ESLint + Prettier sur les fichiers modifiés, puis `astro check` ; les tests restent hors du commit). `.gitattributes` force LF partout. Pas de CI pour l'instant : Render refuse déjà un build cassé.
 
 ## Git
 
