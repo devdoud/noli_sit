@@ -32,7 +32,9 @@ La page `https://nollli.com/` devient une vraie vitrine, dans une ambiance « ci
 | Révélations | `[data-reveal]` | `ScrollTrigger.batch`, une seule fois, à 88 % de la hauteur |
 | Lecture | `[data-motion="progress"]` | largeur de 40 % à 92 % avec le défilement du bandeau (`scrub`) |
 
-Coût : environ 45 Ko compressés de JavaScript, sur l'accueil seulement. Code : `src/scripts/home-motion.ts`.
+**Version futuriste (2026-10-17, demande du porteur)** : accroche qui se décode (ScrambleText) puis reflet qui la balaie ; projecteur qui suit le curseur ; anneaux orbitaux en 3D autour du téléphone ; capsules en verre (« Reprise · épisode 3 », « Mobile money », « Sans publicité », « Nouvel épisode ») qui bougent selon leur profondeur ; ligne de balayage sur l'écran et reflet sur l'affiche ; horizon lumineux et grille plus visible ; bande de mots en lettres contour qui accélère avec le défilement ; titres découpés en lettres (SplitText, `aria` conservé) ; compteurs 01 02 03 ; cartes inclinées en 3D avec lueur sous le curseur ; bordure conique tournante de la carte Premium ; boutons stores magnétiques. Les effets de souris ne s'activent qu'avec un pointeur précis.
+
+Coût : environ 52 Ko compressés de JavaScript (GSAP, ScrollTrigger, SplitText, ScrambleText), sur l'accueil seulement. Code : `src/scripts/home-motion.ts`.
 
 Ce choix revient, pour l'accueil seulement, sur la règle « zéro JavaScript » des specs 0001 et 0002.
 

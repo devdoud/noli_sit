@@ -62,7 +62,7 @@ Polices servies par le site via `@fontsource-variable/*` (woff2 dans `/_astro/`)
 | `LegalLayout` | `h1`, « Mis à jour le … » (`formatLegalDate`, UTC), texte en `prose prose-noli` | — |
 | `SiteHeader` | le mot « Noli » seul (point ambre décoratif), un seul lien vers `/` | survol, focus |
 | `SiteFooter` | nav « Liens légaux » (seulement si `footerLinks` n'est pas vide), mailto support, boutons stores, `© <année> Noli` | liens soulignés, survol `--color-brand-bright` |
-| `StoreButtons` | liste de deux items, Google Play puis App Store | bientôt disponible : élément simple, sans lien ni état ARIA, nom du store + « Bientôt disponible » ; disponible : lien ambre « Télécharger sur … » |
+| `StoreButtons` | liste de deux items, Google Play puis App Store | icône Google Play ou Apple (décorative, `aria-hidden`) ; bientôt disponible : élément simple, sans lien ni état ARIA, nom du store + « Bientôt disponible » ; disponible : lien ambre « Télécharger sur … » ; magnétiques sur l'accueil |
 
 ## Accessibility
 
@@ -76,4 +76,4 @@ Polices servies par le site via `@fontsource-variable/*` (woff2 dans `/_astro/`)
 ## Do's and Don'ts
 
 - Do : réutiliser les composants et les jetons ; ajouter un jeton dans `@theme` et dans ce tableau en même temps.
-- Don't : `aria-disabled` sur un élément non interactif ; badges officiels des stores modifiés ; logos Google ou Apple seuls ; texte en `#62657a` (trop faible) ; couleur seule pour signaler un lien.
+- Don't : `aria-disabled` sur un élément non interactif ; badges officiels des stores modifiés ; texte en `#62657a` (trop faible) ; couleur seule pour signaler un lien.

@@ -104,6 +104,44 @@ const particles = [
   'top-[68%] left-[92%]',
 ] as const
 
+// Capsules en verre autour du téléphone (profondeur : réaction à la souris).
+const chips = [
+  {
+    label: 'Reprise · épisode 3',
+    dot: 'bg-brand',
+    depth: '1.6',
+    position: '-left-14 top-24 md:-left-24',
+  },
+  {
+    label: 'Mobile money',
+    dot: 'bg-violet',
+    depth: '0.9',
+    position: '-right-10 top-44 md:-right-20',
+  },
+  {
+    label: 'Sans publicité',
+    dot: 'bg-brand-bright',
+    depth: '1.2',
+    position: '-left-8 bottom-28 md:-left-16',
+  },
+  {
+    label: 'Nouvel épisode',
+    dot: 'bg-violet',
+    depth: '2',
+    position: '-right-6 bottom-10 md:-right-14',
+  },
+] as const
+
+// Bande défilante (écrite deux fois pour une boucle sans couture).
+const marquee = [
+  'Séries',
+  'Sans publicité',
+  'Mobile money',
+  'Reprise de lecture',
+  'Gratuit pour commencer',
+  'Afrique de l’Ouest',
+] as const
+
 const link = 'text-brand underline underline-offset-4 hover:text-brand-bright'
 const summary =
   'flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 px-6 py-4 font-semibold [&::-webkit-details-marker]:hidden'
@@ -116,16 +154,22 @@ const plus = 'text-2xl leading-none text-brand transition-transform group-open:r
     <div aria-hidden="true" class="pointer-events-none absolute inset-0">
       <div
         data-motion="halo"
-        class="absolute -top-64 -right-64 size-[60rem] bg-radial from-violet/25 via-plum/20 to-transparent to-70% opacity-60"
+        class="absolute -top-64 -right-64 size-[60rem] bg-radial from-violet/30 via-plum/25 to-transparent to-70% opacity-70"
       ></div>
       <div
         data-motion="halo"
-        class="absolute top-24 -left-72 size-[44rem] bg-radial from-brand/12 to-transparent to-65% opacity-60"
+        class="absolute top-24 -left-72 size-[44rem] bg-radial from-brand/14 to-transparent to-65% opacity-70"
       ></div>
-      <!-- Grille lumineuse en perspective, au sol -->
+      <!-- Projecteur qui suit le curseur (variables --spot-x et --spot-y posées par le script) -->
+      <div
+        data-motion="spotlight"
+        class="absolute inset-0 bg-[radial-gradient(520px_circle_at_var(--spot-x,70%)_var(--spot-y,40%),color-mix(in_oklab,var(--color-brand)_12%,transparent),transparent_70%)]"
+      ></div>
+      <!-- Horizon lumineux et grille au sol -->
+      <div class="absolute inset-x-0 bottom-[34%] h-px bg-linear-to-r from-transparent via-brand/60 to-transparent shadow-[0_0_24px_2px_var(--color-brand)] md:bottom-[20%]"></div>
       <div
         data-motion="grid"
-        class="absolute -inset-x-1/2 bottom-0 h-[55%] origin-bottom [transform:perspective(520px)_rotateX(68deg)] bg-[linear-gradient(to_right,color-mix(in_oklab,var(--color-brand)_16%,transparent)_1px,transparent_1px),linear-gradient(to_bottom,color-mix(in_oklab,var(--color-violet)_26%,transparent)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:linear-gradient(to_top,black_5%,transparent_80%)]"
+        class="absolute -inset-x-1/2 bottom-0 h-[34%] origin-bottom md:h-[20%] [transform:perspective(520px)_rotateX(68deg)] bg-[linear-gradient(to_right,color-mix(in_oklab,var(--color-brand)_28%,transparent)_1px,transparent_1px),linear-gradient(to_bottom,color-mix(in_oklab,var(--color-violet)_40%,transparent)_1px,transparent_1px)] bg-[size:56px_56px] [mask-image:linear-gradient(to_top,black_5%,transparent_85%)]"
       ></div>
       {particles.map((position) => (
         <span
@@ -135,25 +179,31 @@ const plus = 'text-2xl leading-none text-brand transition-transform group-open:r
       ))}
     </div>
 
-    <div class="relative mx-auto grid w-full max-w-5xl gap-14 px-5 py-16 md:grid-cols-[1.15fr_0.85fr] md:items-center md:py-24">
+    <div class="relative mx-auto grid w-full max-w-5xl gap-16 px-5 py-16 md:grid-cols-[1.1fr_0.9fr] md:items-center md:py-28">
       <div>
         <p
           data-hero="fade"
-          class="inline-flex items-center gap-2 rounded-full border border-border-mid bg-surface/60 px-3 py-1 text-xs font-semibold tracking-[0.08em] text-text-meta uppercase backdrop-blur"
+          class="inline-flex items-center gap-2 rounded-full border border-border-mid bg-surface/60 px-3 py-1 font-mono text-[11px] font-semibold tracking-[0.2em] text-text-meta uppercase backdrop-blur"
         >
           <span
-            class="size-1.5 rounded-full bg-brand shadow-[0_0_8px_var(--color-brand)]"
+            class="size-1.5 animate-pulse rounded-full bg-brand shadow-[0_0_8px_var(--color-brand)]"
             aria-hidden="true"
           ></span>
           Bientôt sur Android et iOS
         </p>
-        <h1 class="mt-6 text-[2.75rem] leading-[1.02] font-extrabold tracking-[-0.035em] md:text-[3.5rem] lg:text-[4.25rem]">
-          <span data-hero="line" class="block">
+        <h1
+          aria-label="Vos séries, dans votre poche."
+          class="mt-6 text-[2.75rem] leading-[1.02] font-extrabold tracking-[-0.035em] md:text-[3.5rem] lg:text-[4.25rem]"
+        >
+          <span aria-hidden="true" data-hero="line" data-scramble class="block">
             Vos séries,
           </span>
           <span
+            aria-hidden="true"
             data-hero="line"
-            class="block bg-linear-to-r from-brand via-brand-bright to-brand bg-clip-text text-transparent lg:whitespace-nowrap"
+            data-scramble
+            data-motion="shine"
+            class="block bg-linear-to-r from-brand via-brand-bright via-50% to-brand bg-[length:200%_100%] bg-clip-text text-transparent lg:whitespace-nowrap"
           >
             dans votre poche.
           </span>
@@ -170,19 +220,39 @@ const plus = 'text-2xl leading-none text-brand transition-transform group-open:r
         </p>
       </div>
 
-      <!-- Téléphone décoratif -->
+      <!-- Scène 3D : anneaux orbitaux, capsules en verre, téléphone -->
       <div aria-hidden="true" data-hero="phone" class="relative mx-auto w-64 md:w-72">
+        <div class="pointer-events-none absolute top-1/2 left-1/2 size-[30rem] -translate-1/2">
+          <div
+            data-motion="ring"
+            class="absolute inset-0 rounded-full border border-brand/30 shadow-[0_0_40px_-10px_var(--color-brand)]"
+          >
+            <span class="absolute top-0 left-1/2 size-2.5 -translate-1/2 rounded-full bg-brand-bright shadow-[0_0_14px_4px_var(--color-brand)]"></span>
+          </div>
+          <div data-motion="ring" class="absolute inset-10 rounded-full border border-violet/40">
+            <span class="absolute bottom-0 left-1/2 size-2 -translate-x-1/2 translate-y-1/2 rounded-full bg-violet shadow-[0_0_14px_4px_var(--color-violet)]"></span>
+          </div>
+        </div>
+
         <div data-motion="float">
           <div data-motion="tilt" class="relative">
-            <div class="absolute -inset-8 rounded-[3.5rem] bg-brand/10 blur-2xl"></div>
-            <div class="relative rounded-[2.75rem] border border-border-mid bg-surface p-2.5 shadow-2xl shadow-black/70 ring-1 ring-violet/20">
-              <div class="overflow-hidden rounded-[2.25rem] bg-canvas px-4 pt-3 pb-5">
+            <div class="absolute -inset-8 rounded-[3.5rem] bg-brand/15 blur-2xl"></div>
+            <div class="relative rounded-[2.75rem] border border-border-mid bg-surface p-2.5 shadow-2xl shadow-black/70 ring-1 ring-violet/30">
+              <div class="relative overflow-hidden rounded-[2.25rem] bg-canvas px-4 pt-3 pb-5">
+                <div
+                  data-motion="scan"
+                  class="pointer-events-none absolute inset-x-0 -top-1/4 z-10 h-1/4 bg-linear-to-b from-transparent via-brand/15 to-transparent"
+                ></div>
                 <div class="mx-auto h-5 w-24 rounded-full bg-surface"></div>
                 <div class="mt-4 flex items-center justify-between">
                   <span class="font-display text-lg font-extrabold tracking-[-0.03em]">Noli</span>
                   <span class="size-7 rounded-full bg-surface-high"></span>
                 </div>
                 <div class="relative mt-4 aspect-[16/11] overflow-hidden rounded-2xl bg-linear-to-br from-violet via-plum to-canvas">
+                  <div
+                    data-motion="sheen"
+                    class="absolute inset-y-0 -left-1/2 w-1/3 skew-x-[-20deg] bg-linear-to-r from-transparent via-white/25 to-transparent"
+                  ></div>
                   <div class="absolute inset-x-0 bottom-0 h-2/3 bg-linear-to-t from-canvas/90 to-transparent"></div>
                   <div class="absolute right-3 bottom-3 left-3">
                     <div class="h-2.5 w-28 rounded-full bg-text/90"></div>
@@ -194,7 +264,10 @@ const plus = 'text-2xl leading-none text-brand transition-transform group-open:r
                         </svg>
                       </span>
                       <div class="h-1 flex-1 rounded-full bg-text/15">
-                        <div data-motion="progress" class="h-1 w-2/5 rounded-full bg-brand"></div>
+                        <div
+                          data-motion="progress"
+                          class="h-1 w-2/5 rounded-full bg-brand shadow-[0_0_8px_var(--color-brand)]"
+                        ></div>
                       </div>
                     </div>
                   </div>
@@ -209,14 +282,42 @@ const plus = 'text-2xl leading-none text-brand transition-transform group-open:r
             </div>
           </div>
         </div>
+
+        {chips.map((chip) => (
+          <div
+            data-motion="chip"
+            data-depth={chip.depth}
+            class={`absolute z-20 flex items-center gap-2 rounded-2xl border border-white/10 bg-surface/70 px-3 py-2 text-xs font-semibold whitespace-nowrap text-text shadow-[0_10px_40px_-10px_rgb(0_0_0/0.9)] backdrop-blur-md ${chip.position}`}
+          >
+            <span class={`size-2 rounded-full ${chip.dot}`} />
+            {chip.label}
+          </div>
+        ))}
       </div>
     </div>
   </section>
 
+  <!-- Bande défilante -->
+  <div
+    aria-hidden="true"
+    class="relative overflow-hidden border-y border-border bg-surface/50 py-5 [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]"
+  >
+    <div data-motion="marquee" class="flex w-max gap-10 whitespace-nowrap">
+      {[0, 1].map(() =>
+        marquee.map((word) => (
+          <span class="flex items-center gap-10 font-display text-3xl font-extrabold tracking-[-0.02em] text-transparent uppercase [-webkit-text-stroke:1px_color-mix(in_oklab,var(--color-text)_45%,transparent)] md:text-5xl">
+            {word}
+            <span class="size-2 rounded-full bg-brand shadow-[0_0_10px_var(--color-brand)]" />
+          </span>
+        )),
+      )}
+    </div>
+  </div>
+
   <!-- Pourquoi Noli -->
   <section class="border-t border-border">
     <div class="mx-auto w-full max-w-5xl px-5 py-16 md:py-24">
-      <h2 data-reveal class="text-3xl md:text-4xl">
+      <h2 data-split class="text-3xl md:text-4xl">
         Pourquoi Noli
       </h2>
       <p class="mt-3 max-w-xl text-text-meta">Une application simple, faite pour regarder.</p>
@@ -224,8 +325,13 @@ const plus = 'text-2xl leading-none text-brand transition-transform group-open:r
         {features.map((feature) => (
           <li
             data-reveal
-            class="rounded-2xl border border-border bg-surface p-6 transition-colors hover:border-brand/40"
+            data-card
+            class="relative overflow-hidden rounded-2xl border border-border bg-surface p-6 transition-colors hover:border-brand/40"
           >
+            <span
+              aria-hidden="true"
+              class="pointer-events-none absolute inset-0 bg-[radial-gradient(260px_circle_at_var(--card-x,50%)_var(--card-y,0%),color-mix(in_oklab,var(--color-brand)_14%,transparent),transparent_70%)]"
+            />
             <span
               aria-hidden="true"
               class="grid size-11 place-items-center rounded-xl bg-brand/10 ring-1 ring-brand/25"
@@ -245,7 +351,7 @@ const plus = 'text-2xl leading-none text-brand transition-transform group-open:r
   <!-- Comment ça marche -->
   <section class="border-t border-border bg-surface/40">
     <div class="mx-auto w-full max-w-5xl px-5 py-16 md:py-24">
-      <h2 data-reveal class="text-3xl md:text-4xl">
+      <h2 data-split class="text-3xl md:text-4xl">
         Comment ça marche
       </h2>
       <ol class="mt-10 grid gap-10 md:grid-cols-3 md:gap-8">
@@ -253,6 +359,7 @@ const plus = 'text-2xl leading-none text-brand transition-transform group-open:r
           <li data-reveal>
             <span
               aria-hidden="true"
+              data-count
               class="font-display text-5xl font-extrabold tracking-[-0.04em] text-brand/90"
             >
               {String(index + 1).padStart(2, '0')}
@@ -268,39 +375,54 @@ const plus = 'text-2xl leading-none text-brand transition-transform group-open:r
   <!-- Gratuit ou Premium -->
   <section class="border-t border-border">
     <div class="mx-auto w-full max-w-5xl px-5 py-16 md:py-24">
-      <h2 data-reveal class="text-3xl md:text-4xl">
+      <h2 data-split class="text-3xl md:text-4xl">
         Gratuit ou Premium
       </h2>
       <p class="mt-3 max-w-xl text-text-meta">
         Commencez sans payer. Passez au premium quand une série vous accroche.
       </p>
-      <div class="mt-10 grid gap-4 md:grid-cols-2">
+      <div class="isolate mt-10 grid gap-4 md:grid-cols-2">
         {plans.map((plan) => (
           <article
             data-reveal
-            class={`relative rounded-3xl border p-7 ${plan.highlight ? 'border-brand/60 bg-linear-to-b from-plum to-surface' : 'border-border bg-surface'}`}
+            class={`relative rounded-3xl ${plan.highlight ? 'overflow-hidden p-px shadow-[0_0_70px_-25px_var(--color-brand)]' : 'border border-border bg-surface p-7'}`}
           >
             {plan.highlight && (
-              <p class="absolute -top-3 right-6 rounded-full bg-brand px-3 py-1 text-xs font-bold text-canvas">
-                Tout le catalogue
-              </p>
+              <span
+                aria-hidden="true"
+                data-motion="aurora"
+                class="pointer-events-none absolute top-1/2 left-1/2 size-[220%] -translate-1/2 bg-[conic-gradient(var(--color-brand),transparent_18%,var(--color-violet)_45%,transparent_65%,var(--color-brand-bright)_85%,var(--color-brand))]"
+              />
             )}
-            <h3 class="text-2xl">{plan.name}</h3>
-            <p class="mt-1 text-sm text-text-meta">{plan.tagline}</p>
-            <ul class="mt-6 space-y-3">
-              {plan.items.map((item) => (
-                <li class="flex gap-3">
-                  <svg
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                    class="mt-0.5 size-5 shrink-0 fill-brand"
-                  >
-                    <path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z" />
-                  </svg>
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
+            <div
+              class={
+                plan.highlight
+                  ? 'relative h-full rounded-[calc(1.5rem-1px)] bg-linear-to-b from-plum to-surface p-7'
+                  : ''
+              }
+            >
+              {plan.highlight && (
+                <p class="absolute top-6 right-6 rounded-full bg-brand px-3 py-1 text-xs font-bold text-canvas shadow-[0_0_16px_var(--color-brand)]">
+                  Tout le catalogue
+                </p>
+              )}
+              <h3 class="text-2xl">{plan.name}</h3>
+              <p class="mt-1 text-sm text-text-meta">{plan.tagline}</p>
+              <ul class="mt-6 space-y-3">
+                {plan.items.map((item) => (
+                  <li class="flex gap-3">
+                    <svg
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                      class="mt-0.5 size-5 shrink-0 fill-brand"
+                    >
+                      <path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z" />
+                    </svg>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </article>
         ))}
       </div>
@@ -313,7 +435,7 @@ const plus = 'text-2xl leading-none text-brand transition-transform group-open:r
   <!-- Questions fréquentes -->
   <section class="border-t border-border bg-surface/40">
     <div class="mx-auto w-full max-w-5xl px-5 py-16 md:py-24">
-      <h2 data-reveal class="text-3xl md:text-4xl">
+      <h2 data-split class="text-3xl md:text-4xl">
         Questions fréquentes
       </h2>
       <div

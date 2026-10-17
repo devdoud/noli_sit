@@ -184,13 +184,16 @@ describe('template (spec 0002)', () => {
   it('shows both stores as coming soon, with no link and no ARIA state (covers: AC-6)', () => {
     const footer = between(indexHtml, '<footer', '</footer>')
     const list = between(footer, '<ul class="flex flex-wrap gap-3">', '</ul>')
-    const items = [...list.matchAll(/<li>(.*?)<\/li>/gs)].map((m) => m[1])
+    const items = [...list.matchAll(/<li\b[^>]*>(.*?)<\/li>/gs)].map((m) => m[1])
     expect(items).toHaveLength(2)
     expect(items[0]).toContain('Google Play')
     expect(items[1]).toContain('App Store')
     for (const item of items) {
       expect(item).toContain('Bientôt disponible')
-      expect(item).not.toMatch(/<a\b|href=|tabindex|aria-/)
+      expect(item).not.toMatch(/<a\b|href=|tabindex|aria-disabled/)
+      // L'icône du store est décorative (2026-10-17) : seul aria-hidden est permis.
+      expect(item).toMatch(/<svg [^>]*aria-hidden="true"/)
+      expect(item.replace(/aria-hidden="true"/g, '')).not.toContain('aria-')
     }
   })
 })
