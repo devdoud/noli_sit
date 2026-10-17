@@ -61,8 +61,8 @@ Polices servies par le site via `@fontsource-variable/*` (woff2 dans `/_astro/`)
 | `BaseLayout` | `head` complet (titre par `pageTitle`, description, canonical par `canonicalPath` sauf 404, `color-scheme`, `theme-color`, favicons), lien d'évitement, haut de page, `main`, pied de page | lien d'évitement caché, visible au focus |
 | `LegalLayout` | `h1`, « Mis à jour le … » (`formatLegalDate`, UTC), texte en `prose prose-noli` | — |
 | `SiteHeader` | le mot « Noli » seul (point ambre décoratif), un seul lien vers `/` | survol, focus |
-| `SiteFooter` | nav « Liens légaux » (seulement si `footerLinks` n'est pas vide), mailto support, boutons stores, `© <année> Noli` | liens soulignés, survol `--color-brand-bright` |
-| `StoreButtons` | liste de deux items, Google Play puis App Store | icône Google Play ou Apple (décorative, `aria-hidden`) ; bientôt disponible : élément simple, sans lien ni état ARIA, nom du store + « Bientôt disponible » ; disponible : lien ambre « Télécharger sur … » ; magnétiques sur l'accueil |
+| `SiteFooter` | trois colonnes : marque (« Noli », phrase, boutons stores), « Informations légales » (nav seulement si `footerLinks` n'est pas vide), « Aide » (questions fréquentes, mailto support) ; barre du bas : `© <année> Noli` et « Édité par » l'éditeur ; ligne lumineuse en haut, grand « Noli » en contour en bas (décoratifs) | liens soulignés, survol `--color-brand-bright` |
+| `StoreButtons` | liste de deux items, Google Play puis App Store | logo Google Play en quatre couleurs ou logo Apple en blanc (couleurs des marques, seule exception aux jetons ; décoratifs, `aria-hidden`) ; bientôt disponible : élément simple, sans lien ni état ARIA, nom du store + « Bientôt disponible » ; disponible : lien ambre « Télécharger sur … » ; magnétiques sur l'accueil |
 
 ## Accessibility
 
