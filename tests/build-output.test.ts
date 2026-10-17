@@ -17,6 +17,7 @@ let files: string[]
 let indexHtml: string
 let notFoundHtml: string
 let privacyHtml: string
+let deletionHtml: string
 let css: string
 
 // Le morceau de html qui va de start jusqu'au premier end qui le suit.
@@ -39,6 +40,7 @@ beforeAll(async () => {
   indexHtml = await readFile(join(outDir, 'index.html'), 'utf8')
   notFoundHtml = await readFile(join(outDir, '404.html'), 'utf8')
   privacyHtml = await readFile(join(outDir, 'confidentialite.html'), 'utf8')
+  deletionHtml = await readFile(join(outDir, 'suppression-compte.html'), 'utf8')
   const cssFiles = files.filter((file) => file.startsWith('_astro/') && file.endsWith('.css'))
   css = (await Promise.all(cssFiles.map((file) => readFile(join(outDir, file), 'utf8')))).join('\n')
 }, 120_000)
@@ -51,6 +53,7 @@ const pages = [
   ['home page', () => indexHtml],
   ['404 page', () => notFoundHtml],
   ['privacy page', () => privacyHtml],
+  ['account deletion page', () => deletionHtml],
 ] as const
 
 describe('build output (spec 0001)', () => {
@@ -307,4 +310,89 @@ describe('privacy policy page (spec 0003)', () => {
       expect(files).toContain(`${href.slice(1)}.html`)
     }
   })
+})
+
+describe('account deletion page (spec 0004)', () => {
+  const text = () => deletionHtml.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ')
+
+  it('is built at /suppression-compte with its title and canonical (covers: AC-1)', () => {
+    expect(files).toContain('suppression-compte.html')
+    expect(deletionHtml).toContain('<title>Supprimer votre compte Noli · Noli</title>')
+    expect(deletionHtml).toContain(
+      '<link rel="canonical" href="https://nollli.com/suppression-compte">',
+    )
+    expect([...deletionHtml.matchAll(/<h1\b/g)]).toHaveLength(1)
+  })
+
+  it('names the app and its publisher, and gives both ways before any section (covers: AC-2)', () => {
+    const intro = deletionHtml.slice(
+      deletionHtml.indexOf('prose-noli'),
+      deletionHtml.indexOf('<h2'),
+    )
+    const publisher = siteValues['editeur.nom'].trim() || '[À COMPLÉTER : editeur.nom]'
+    expect(intro).toContain('Noli')
+    expect(intro).toContain(publisher)
+    expect(intro).toContain('Supprimer mon compte')
+    expect(intro).toContain('sans mot de passe')
+    expect(intro).toContain('support@nollli.com')
+  })
+
+  it('has the 10 sections in the spec order (covers: AC-3)', () => {
+    const headings = [...deletionHtml.matchAll(/<h2[^>]*>(.*?)<\/h2>/g)].map((m) => m[1])
+    expect(headings).toEqual([
+      'Dans l’application',
+      'Sans l’application',
+      'Mot de passe oublié',
+      'Plus d’accès à votre adresse email',
+      'Ce qui est supprimé',
+      'Ce que nous gardons',
+      'Votre abonnement premium',
+      'Après la suppression',
+      'Supprimer seulement une partie de vos données',
+      'Une question',
+    ])
+  })
+
+  it('links to the support email with the prefilled subject (covers: AC-5)', () => {
+    expect(deletionHtml).toMatch(
+      /<a href="mailto:support@nollli\.com\?subject=Suppression%20de%20mon%20compte%20Noli">Écrire au support<\/a>/,
+    )
+  })
+
+  it.each([
+    ['the profile label', 'Profil'],
+    ['the delete button', 'Supprimer mon compte'],
+    ['the final button', 'Supprimer définitivement'],
+    ['the forgotten password link', 'Mot de passe oublié ?'],
+    ['the photo removal', 'Retirer la photo'],
+    ['the no password path', 'sans mot de passe'],
+    ['the one month delay', 'délai d’un mois'],
+    ['the extension', 'deux mois'],
+    ['the 3 year trace', '3 ans'],
+    ['the accounting retention', 'obligations comptables et fiscales'],
+    ['the premium loss', 'sans remboursement'],
+    ['the confirmation email subject', '« Ton compte Noli a été supprimé »'],
+    ['the phone data', 'désinstallez l’application'],
+    ['the push counter', 'compteur quotidien'],
+    ['the providers', 'Brevo'],
+    ['re-registration', 'même adresse email'],
+  ])('mentions %s (covers: AC-4 to AC-10)', (_what, phrase) => {
+    expect(text()).toContain(phrase)
+  })
+
+  it('is linked from the privacy policy (covers: AC-11)', () => {
+    expect(privacyHtml).toMatch(/<a href="\/suppression-compte">[^<]+<\/a>/)
+  })
+
+  it.each(pages)(
+    'lists Suppression de compte after Confidentialité in the %s footer (covers: AC-11)',
+    (_n, html) => {
+      const footer = between(html(), '<footer', '</footer>')
+      const privacy = footer.indexOf('>Confidentialité</a>')
+      const deletion = footer.indexOf('>Suppression de compte</a>')
+      expect(privacy).toBeGreaterThan(-1)
+      expect(deletion).toBeGreaterThan(privacy)
+      expect(footer).toContain('href="/suppression-compte"')
+    },
+  )
 })

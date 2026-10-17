@@ -7,12 +7,6 @@
 
 La page `https://nollli.com/suppression-compte` explique comment supprimer son compte Noli : dans l'application, par email au support pour qui n'a plus l'app, et que faire en cas de mot de passe oublié ou d'adresse email perdue. Elle dit ce qui est effacé, ce qui est gardé et combien de temps, ce qui arrive au premium, et comment supprimer seulement une partie de ses données. Les règles viennent de la spec 0010 du backend et de l'inventaire de la spec 0003. C'est un fichier Markdown de la collection `legal`, rendu par la route déjà construite, et la politique de confidentialité y renvoie.
 
-## Context
-
-Google Play exige, pour toute app qui permet de créer un compte, une adresse web où l'on peut demander la suppression de son compte et de ses données, sans avoir l'app. Cette page doit nommer l'app ou son éditeur, donner les étapes, dire quelles données sont supprimées ou gardées et pour combien de temps (basis: Google Play User Data policy ; spec 0010 du backend, AC-11).
-
-Le backend sait déjà supprimer un compte (`DELETE /users/me` avec le mot de passe, `DELETE /users/:id` pour un admin, spec 0010, en cours de construction côté backend). En revanche, l'app n'a **pas encore** d'écran de suppression : seul « Retirer la photo » existe dans le profil (`noli_app/lib/core/constants/app_constants.dart`). Le backend n'a pas non plus de route pour effacer seulement l'historique d'un compte. La page doit donc décrire un chemin dans l'app qui reste à construire, et une suppression partielle traitée à la main par un admin.
-
 ## Requirements
 
 **User stories**:
@@ -38,9 +32,12 @@ Le backend sait déjà supprimer un compte (`DELETE /users/me` avec le mot de pa
 
 **Chosen option**: un texte Markdown de la collection `legal`, rendu par `src/pages/[slug].astro`, qui décrit le chemin prévu dans l'app avec des libellés fixés ici (contrat pour `noli_app`), la demande par email avec un lien `mailto` au sujet prérempli, et les cas mot de passe oublié, email perdu et suppression partielle.
 
-Alternatives écartées : ne décrire que l'email tant que l'écran de l'app n'existe pas (la page serait à réécrire avant l'envoi aux stores, et l'app n'est pas publiée, donc personne ne suit un chemin absent) ; refuser toute suppression partielle (moins conforme au droit d'effacement, alors qu'un admin peut le faire).
 
 **Implementation skills**: `astro` (`astrolicious/agent-skills`, `.claude/skills/astro/`) · `vitest` (`antfu/skills`, `.claude/skills/vitest/`)
+
+## Rationale
+
+Le contexte, les options écartées et les sources sont dans [rationale.md](rationale.md).
 
 ## Feature design
 
@@ -101,13 +98,3 @@ Alternatives écartées : ne décrire que l'email tant que l'écran de l'app n'e
 - [ ] `../noli-backend` : une route admin pour effacer seulement l'historique (ou une autre donnée) d'un compte, pour les demandes de suppression partielle.
 - [ ] Support : écrire la procédure de vérification d'identité pour une personne qui a perdu l'accès à son email.
 - [ ] Relecture juridique de cette page avec la politique de confidentialité.
-
-## References
-
-**Project sources**: spec 0010 du backend (`../noli-backend/docs/specs/0010-account-deletion/index.md`) ; spec 0003 (inventaire) ; `noli_app/lib/core/constants/app_constants.dart` (« Mot de passe oublié ? », « Retirer la photo ») ; `HANDOFF.md`.
-
-**Practices & standards**: droit à l'effacement (RGPD article 17), délai de réponse d'un mois.
-
-**Links** (vérifiés le 2026-10-17) :
-- Google Play, User Data policy : https://support.google.com/googleplay/android-developer/answer/10144311?hl=en
-- Apple, App Store Review Guidelines (5.1.1) : https://developer.apple.com/app-store/review/guidelines/

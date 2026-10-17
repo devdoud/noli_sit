@@ -77,12 +77,12 @@ spec [0003](../specs/0003-politique-confidentialite/index.md) · code in `src/co
 La page exigée par Google Play : comment supprimer son compte dans l'app ou sans l'app, ce qui est effacé, ce qui est gardé. Les règles viennent de la spec 0010 du backend.
 **Done when:** `https://nollli.com/suppression-compte` explique les deux chemins (dans l'app, ou par email à `support@nollli.com` depuis l'adresse du compte), ce qui est effacé et gardé, la perte du premium sans remboursement, l'email de confirmation et les copies chez les prestataires, en accord avec la spec 0010, et le texte a été relu.
 - [x] Design it (spec): `/architect page suppression de compte`
-- [ ] Build it: `/develop page suppression de compte`
-   - [ ] Texte de la page depuis la spec 0010 du backend (AC-1 à AC-10, AC-12)
-   - [ ] Liens : pied de page et politique de confidentialité (AC-11)
-   - [ ] Tests et contrôles de publication dans `verify.md` (AC-1 à AC-11, AC-13)
+- [x] Build it: `/develop page suppression de compte`
+   - [x] Texte de la page depuis la spec 0010 du backend (AC-1 à AC-10, AC-12)
+   - [x] Liens : pied de page et politique de confidentialité (AC-11)
+   - [x] Tests et contrôles de publication dans `verify.md` (AC-1 à AC-11, AC-13)
 - [ ] Verify it: `/check verify page suppression de compte` (dont les conditions de publication, AC-13)
-spec [0004](../specs/0004-page-suppression-compte.md)
+spec [0004](../specs/0004-page-suppression-compte/index.md) · code in `src/content/legal/suppression-compte.md`, `src/config/site.ts` (`footerLinks`)
 
 ## Slice 3: conditions d'utilisation
 
