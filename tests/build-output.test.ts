@@ -6,7 +6,8 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { footerLinks } from '../src/config/site'
+import { footerLinks, site } from '../src/config/site'
+import { siteValues } from '../src/config/site-values'
 
 const projectRoot = fileURLToPath(new URL('..', import.meta.url))
 const astroBin = join(projectRoot, 'node_modules', 'astro', 'bin', 'astro.mjs')
@@ -15,10 +16,14 @@ let outDir: string
 let files: string[]
 let indexHtml: string
 let notFoundHtml: string
+let privacyHtml: string
 let css: string
 
-const between = (html: string, start: string, end: string) =>
-  html.slice(html.indexOf(start), html.indexOf(end) + end.length)
+// Le morceau de html qui va de start jusqu'au premier end qui le suit.
+const between = (html: string, start: string, end: string) => {
+  const from = html.indexOf(start)
+  return html.slice(from, html.indexOf(end, from) + end.length)
+}
 
 beforeAll(async () => {
   outDir = await mkdtemp(join(tmpdir(), 'noli-build-'))
@@ -33,6 +38,7 @@ beforeAll(async () => {
   files = (await readdir(outDir, { recursive: true })).map((file) => file.replaceAll('\\', '/'))
   indexHtml = await readFile(join(outDir, 'index.html'), 'utf8')
   notFoundHtml = await readFile(join(outDir, '404.html'), 'utf8')
+  privacyHtml = await readFile(join(outDir, 'confidentialite.html'), 'utf8')
   const cssFiles = files.filter((file) => file.startsWith('_astro/') && file.endsWith('.css'))
   css = (await Promise.all(cssFiles.map((file) => readFile(join(outDir, file), 'utf8')))).join('\n')
 }, 120_000)
@@ -44,6 +50,7 @@ afterAll(async () => {
 const pages = [
   ['home page', () => indexHtml],
   ['404 page', () => notFoundHtml],
+  ['privacy page', () => privacyHtml],
 ] as const
 
 describe('build output (spec 0001)', () => {
@@ -201,5 +208,103 @@ describe('resources (spec 0002, covers: AC-8)', () => {
     const rules = css.replace(/\/\*[\s\S]*?\*\//g, '')
     expect(rules).not.toMatch(/https?:\/\/(?!nollli\.com)/)
     expect(rules).not.toContain('data:')
+  })
+})
+
+describe('privacy policy page (spec 0003)', () => {
+  const text = () => privacyHtml.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ')
+
+  it('is built at /confidentialite with its title, canonical and French date (covers: AC-1)', () => {
+    expect(files).toContain('confidentialite.html')
+    expect(privacyHtml).toContain('<title>Politique de confidentialité · Noli</title>')
+    expect(privacyHtml).toContain(
+      '<link rel="canonical" href="https://nollli.com/confidentialite">',
+    )
+    expect(privacyHtml).toMatch(
+      /Mis à jour le <time datetime="\d{4}-\d{2}-\d{2}">\d{1,2} \S+ \d{4}<\/time>/,
+    )
+    expect([...privacyHtml.matchAll(/<h1\b/g)]).toHaveLength(1)
+  })
+
+  it('has the 15 sections in the spec order (covers: AC-2)', () => {
+    const headings = [...privacyHtml.matchAll(/<h2[^>]*>(.*?)<\/h2>/g)].map((m) => m[1])
+    expect(headings).toEqual([
+      'Qui sommes nous',
+      'En bref',
+      'Les données que nous traitons',
+      'Sur votre téléphone',
+      'Pourquoi nous les utilisons',
+      'Avec qui nous les partageons',
+      'Où elles sont hébergées',
+      'Combien de temps nous les gardons',
+      'Vos droits',
+      'Supprimer votre compte',
+      'Les mineurs',
+      'La sécurité',
+      'Ce site web',
+      'Les changements de cette politique',
+      'Nous contacter',
+    ])
+  })
+
+  it('fills every tag from site.ts, or marks it to complete when empty (covers: AC-6)', () => {
+    expect(privacyHtml).not.toContain('{{')
+    for (const [tag, value] of Object.entries(siteValues)) {
+      const expected = value.trim() === '' ? `[À COMPLÉTER : ${tag}]` : value.trim()
+      expect(text(), tag).toContain(expected)
+    }
+  })
+
+  it.each([
+    'MongoDB Atlas',
+    'Render',
+    'Cloudinary',
+    'Brevo',
+    'Firebase Cloud Messaging',
+    'KkiaPay',
+  ])('names the provider %s (covers: AC-4)', (provider) => {
+    expect(text()).toContain(provider)
+  })
+
+  it.each([
+    ['the support address', site.supportEmail],
+    ['the one month answer delay', 'un délai d’un mois'],
+    ['the Benin authority', 'APDP'],
+    ['the EU authority example', 'CNIL'],
+    ['the minimum age', '13 ans'],
+    ['the parental agreement for premium', 'accord d’un parent'],
+    ['cookies', 'cookie'],
+    ['the absence of a DPO', 'délégué à la protection des données'],
+    ['automated decisions', 'décision automatisée'],
+    ['the 30 day notification retention', '30 jours'],
+    ['the 24 hour reset code retention', '24 heures'],
+    ['the 3 year deletion trace', '3 ans'],
+    ['the accounting retention', 'obligations comptables et fiscales'],
+    ['the data required for an account', 'nous ne pouvons pas créer de compte'],
+  ])('mentions %s (covers: AC-3, AC-5, AC-7, AC-8, AC-12)', (_what, phrase) => {
+    expect(text()).toContain(phrase)
+  })
+
+  it.each([
+    'Cloudflare',
+    'Sign in with Apple',
+    'connexion Apple',
+    'Google Sign',
+    'connexion Google',
+  ])('does not mention the inactive service %s (covers: AC-4)', (phrase) => {
+    expect(text().toLowerCase()).not.toContain(phrase.toLowerCase())
+  })
+
+  it.each(pages)('links the policy from the footer of the %s (covers: AC-9)', (_n, html) => {
+    const footer = between(html(), '<footer', '</footer>')
+    expect(footer).toMatch(/<a [^>]*href="\/confidentialite"[^>]*>Confidentialité<\/a>/)
+  })
+
+  it('links only to pages that are built', () => {
+    const internal = [...privacyHtml.matchAll(/href="(\/[^"#]*)"/g)].map((m) => m[1])
+    for (const href of internal) {
+      if (href === '/' || href.startsWith('/_astro/') || /\.(png|css)$/.test(href)) continue
+      expect(files).toContain(`${href.slice(1)}.html`)
+    }
   })
 })

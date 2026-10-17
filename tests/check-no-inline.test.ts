@@ -20,9 +20,13 @@ async function writePage(relativePath: string, html: string) {
   await writeFile(path, html, 'utf8')
 }
 
-function runCheck() {
+// Lance le contrôle sans RENDER par défaut ; extraEnv simule un build Render.
+function runCheck(extraEnv: Record<string, string> = {}) {
+  const env = { ...process.env, ...extraEnv }
+  if (!('RENDER' in extraEnv)) delete env.RENDER
   const result = spawnSync(process.execPath, [join(root, 'scripts', 'check-no-inline.mjs')], {
     encoding: 'utf8',
+    env,
   })
   return { code: result.status, out: `${result.stdout}${result.stderr}` }
 }
@@ -88,6 +92,39 @@ describe('check-no-inline', () => {
     const { code } = runCheck()
 
     expect(code).toBe(0)
+  })
+
+  it('fails on a {{tag}} left in a page (spec 0003)', async () => {
+    await writePage('index.html', cleanPage.replace('<h1>Noli</h1>', '<p>{{editeur.nom}}</p>'))
+
+    const { code, out } = runCheck()
+
+    expect(code).toBe(1)
+    expect(out).toContain('index.html : balise {{…}} non remplacée')
+  })
+
+  it('fails on an empty legal text (spec 0003)', async () => {
+    await writePage(
+      'confidentialite.html',
+      cleanPage.replace('<h1>Noli</h1>', '<div class="prose prose-noli mt-8">  </div>'),
+    )
+
+    const { code, out } = runCheck()
+
+    expect(code).toBe(1)
+    expect(out).toContain('confidentialite.html : texte légal vide')
+  })
+
+  it('accepts a value to complete locally, refuses it on Render (spec 0003)', async () => {
+    await writePage(
+      'index.html',
+      cleanPage.replace('Noli</h1>', 'Noli [À COMPLÉTER : editeur.nom]</h1>'),
+    )
+
+    expect(runCheck().code).toBe(0)
+    const onRender = runCheck({ RENDER: 'true' })
+    expect(onRender.code).toBe(1)
+    expect(onRender.out).toContain('index.html : valeur à compléter dans src/config/site.ts')
   })
 
   it('fails and names the page when it loads no /_astro/ stylesheet (spec 0002)', async () => {
