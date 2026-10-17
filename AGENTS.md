@@ -6,7 +6,7 @@ Site public de Noli sur `https://nollli.com` : vitrine et pages légales exigée
 
 - **Language / Runtime**: TypeScript strict (`astro/tsconfigs/strict`), Node 22.12 ou plus (`.nvmrc`)
 - **Framework**: Astro 7, sortie statique (`output: 'static'`, aucun adaptateur), zéro JavaScript envoyé au navigateur
-- **Key dependencies**: Tailwind CSS 4 (`@tailwindcss/vite`), `@tailwindcss/typography` (avec les pages légales), Vitest
+- **Key dependencies**: Tailwind CSS 4 (`@tailwindcss/vite`), `@tailwindcss/typography`, polices `@fontsource-variable/bricolage-grotesque` et `@fontsource-variable/plus-jakarta-sans`, Vitest
 - **Package manager**: npm (`package-lock.json` commité)
 - **Hosting**: Render Static Site (`render.yaml`), déploiement à chaque push sur `main`. Détails : spec [0001](docs/specs/0001-pile-hebergement-domaine/index.md)
 
@@ -24,6 +24,7 @@ npm test          # Vitest (environ 80 s : un test reconstruit le site)
 npm run check     # Types seulement
 npm run lint      # ESLint (lint:fix pour corriger)
 npm run format    # Prettier (format:check pour vérifier sans écrire)
+node scripts/make-icons.mjs  # Régénère les favicons de public/ depuis src/assets/noli-logo.png
 ```
 
 ## Specs
@@ -35,7 +36,9 @@ Stored in `docs/specs/`. Format: `docs/specs/NNNN-title.md` (ou `NNNN-title/inde
 - Style fonctionnel : composants et fonctions purs, données immuables (`as const`, `readonly`), pas d'état partagé, pas de classes.
 - Structure Astro de la spec 0001 : `pages/`, `layouts/`, `components/`, `content/`, `config/`, `styles/`, `assets/`.
 - Adresses publiques déclarées une seule fois dans `src/config/site.ts` (`routes`), jamais modifiées une fois promises.
-- CSP stricte : aucun `<script>`, `is:inline`, `define:vars`, `set:html` avec du code, attribut `style=""` ni HTML brut dans le Markdown. Pas d'option `layout`/`fit` sur `<Image>`. Le build échoue sinon.
+- CSP stricte : aucun `<script>`, `is:inline`, `define:vars`, `set:html` avec du code, attribut `style=""` ni HTML brut dans le Markdown. Pas d'option `layout`/`fit` sur `<Image>`. Chaque page charge une feuille `/_astro/*.css`. Le build échoue sinon.
+- Design system : toute interface suit `design.md` (direction, gabarit, composants, accessibilité). Les jetons vivent dans `src/styles/global.css` et sont recopiés à l'identique dans le tableau de `design.md` (un test vérifie la concordance). Toute page passe par `BaseLayout` ou `LegalLayout`.
+- Une page n'entre dans `footerLinks` (`src/config/site.ts`) qu'une fois construite : chaque feature de page y ajoute sa ligne.
 - Accessibilité WCAG AA : contrastes, clavier, focus visible, un seul `<h1>` par page, `alt` sur chaque image, `lang="fr"`.
 - Nommage : fichiers de pages et adresses en français sans accent (`suppression-compte`), composants en PascalCase anglais, code en anglais, textes visibles en français.
 - Exports nommés seulement dans les `.ts` (les composants `.astro` gardent leur export par défaut).
