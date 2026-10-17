@@ -1,14 +1,21 @@
 ---
-// Gabarit de base de toutes les pages. Le haut, le pied de page et les balises de partage
-// arrivent avec la charte (feature 3) et la feature 10.
+// Gabarit de toutes les pages (spec 0002) : head complet, lien d'évitement, haut de page,
+// contenu, pied de page. Les balises de partage arrivent avec la feature 10.
 import '../styles/global.css'
+import SiteFooter from '../components/SiteFooter.astro'
+import SiteHeader from '../components/SiteHeader.astro'
+import { canonicalPath, pageTitle, site } from '../config/site'
 
 interface Props {
-  title: string
+  // Nom de la page, sans « · Noli » ; absent pour l'accueil.
+  title?: string
   description: string
+  // false pour la page 404, qui n'a pas d'adresse canonique.
+  canonical?: boolean
 }
 
-const { title, description } = Astro.props
+const { title, description, canonical = true } = Astro.props
+const canonicalUrl = canonical ? new URL(canonicalPath(Astro.url.pathname), Astro.site).href : null
 ---
 
 <!doctype html>
@@ -16,10 +23,25 @@ const { title, description } = Astro.props
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}</title>
+    <title>{pageTitle(title)}</title>
     <meta name="description" content={description} />
+    {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content={site.themeColor} />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   </head>
   <body>
-    <slot />
+    <a
+      href="#contenu"
+      class="sr-only rounded-full bg-brand px-4 py-3 font-semibold text-canvas focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50"
+    >
+      Aller au contenu
+    </a>
+    <SiteHeader />
+    <main id="contenu" tabindex="-1">
+      <slot />
+    </main>
+    <SiteFooter />
   </body>
 </html>

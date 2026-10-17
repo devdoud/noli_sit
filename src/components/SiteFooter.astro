@@ -1,0 +1,43 @@
+---
+// Pied de page (spec 0002, AC-5) : liens légaux des pages déjà construites, adresse support,
+// boutons des stores, copyright avec l'année du build.
+import StoreButtons from './StoreButtons.astro'
+import { footerLinks, site } from '../config/site'
+
+const year = new Date().getFullYear()
+const link =
+  'inline-flex min-h-11 items-center text-text underline underline-offset-4 transition-colors hover:text-brand-bright'
+---
+
+<footer class="border-t border-border bg-surface text-sm leading-5 text-text-meta">
+  <div class="mx-auto grid w-full max-w-3xl gap-8 px-5 py-10 md:grid-cols-2">
+    <div class="flex flex-col gap-4">
+      {footerLinks.length > 0 && (
+        <nav aria-label="Liens légaux">
+          <ul class="flex flex-col">
+            {footerLinks.map((entry) => (
+              <li>
+                <a href={entry.href} class={link}>
+                  {entry.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
+      <div>
+        <p>Une question ? Écrivez nous :</p>
+        <a href={`mailto:${site.supportEmail}`} class={link}>
+          {site.supportEmail}
+        </a>
+      </div>
+    </div>
+    <div class="flex flex-col gap-3 md:items-end">
+      <p>L'app Noli arrive sur les stores.</p>
+      <StoreButtons />
+    </div>
+    <p class="md:col-span-2">
+      © {year} {site.name}
+    </p>
+  </div>
+</footer>

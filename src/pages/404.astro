@@ -1,17 +1,20 @@
 ---
-// Page d'erreur : Astro la produit en dist/404.html.
+// Page d'erreur : Astro la produit en dist/404.html. Pas d'adresse canonique.
 import BaseLayout from '../layouts/BaseLayout.astro'
-import { routes, site } from '../config/site'
+import { routes } from '../config/site'
 ---
 
-<BaseLayout title={`Page introuvable · ${site.name}`} description="Cette page n'existe pas.">
-  <main class="mx-auto max-w-2xl px-4 py-16">
-    <h1 class="text-3xl font-bold">Page introuvable</h1>
-    <p class="mt-4">Cette adresse ne mène nulle part.</p>
-    <p class="mt-4">
-      <a class="text-brand underline" href={routes.home}>
+<BaseLayout title="Page introuvable" description="Cette page n'existe pas." canonical={false}>
+  <div class="mx-auto w-full max-w-3xl px-5 py-10 md:py-16">
+    <h1>Page introuvable</h1>
+    <p class="mt-4 text-text-meta">Cette adresse ne mène nulle part.</p>
+    <p class="mt-6">
+      <a
+        class="inline-flex min-h-11 items-center text-brand underline underline-offset-4 hover:text-brand-bright"
+        href={routes.home}
+      >
         Retour à l'accueil
       </a>
     </p>
-  </main>
+  </div>
 </BaseLayout>

@@ -1,0 +1,32 @@
+---
+// Boutons des stores (spec 0002, AC-6). Lien null : simple élément « Bientôt disponible »,
+// sans lien ni état ARIA. Lien renseigné : un vrai lien de téléchargement.
+import { storeLinks } from '../config/site'
+
+const stores = [
+  { name: 'Google Play', download: 'Télécharger sur Google Play', href: storeLinks.googlePlay },
+  { name: 'App Store', download: "Télécharger sur l'App Store", href: storeLinks.appStore },
+] as const
+
+const shape = 'inline-flex min-h-11 flex-col justify-center rounded-full px-5 py-1.5'
+---
+
+<ul class="flex flex-wrap gap-3">
+  {stores.map((store) => (
+    <li>
+      {store.href ? (
+        <a
+          href={store.href}
+          class={`${shape} bg-brand text-sm font-semibold text-canvas transition-colors hover:bg-brand-bright`}
+        >
+          {store.download}
+        </a>
+      ) : (
+        <span class={`${shape} border border-border-mid bg-surface-high`}>
+          <span class="text-sm leading-5 font-semibold text-text">{store.name}</span>
+          <span class="text-xs leading-4 text-text-meta">Bientôt disponible</span>
+        </span>
+      )}
+    </li>
+  ))}
+</ul>
