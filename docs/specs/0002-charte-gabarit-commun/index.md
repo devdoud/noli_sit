@@ -18,7 +18,7 @@ Le site reprend le design system v2 de l'app : fond sombre obsidienne, ambre saf
 - **AC-1**: `design.md` exists at the project root and covers colors, typography, spacing, layout, the components below with their states, and the accessibility rules. Its token table lists each token as `` | `--token` | `value` | `` with exactly the string used in `src/styles/global.css` (`@theme`), and every `@theme` token appears in that table.
 - **AC-2**: Every page has `<html lang="fr">`, `<meta name="color-scheme" content="dark">`, `<meta name="theme-color" content="#0B0C10">`, the two favicon links, a `<title>` of the form `<Page> · Noli` (home: `Noli`) and a non empty `<meta name="description">`. Every page except the 404 has `<link rel="canonical">` to `https://nollli.com<path>` with no `.html` and no trailing slash (home: `https://nollli.com/`); the 404 page has none.
 - **AC-3**: The first link in `<body>` is a « Aller au contenu » skip link to `#contenu`, hidden until focused and visible when focused; `<main id="contenu" tabindex="-1">` receives the focus.
-- **AC-4**: The header shows the app icon and the word « Noli » in a single link to `/`; the icon has `alt=""`, so the link's accessible name is « Noli ».
+- **AC-4**: The header shows only the word « Noli » (no icon), in a single link to `/` whose accessible name is « Noli ». _(Mis à jour le 2026-10-17 à la demande du porteur : l'icône de l'app est retirée du haut de page.)_
 - **AC-5**: The footer contains a `mailto:` link to `support@nollli.com`, the store buttons, and `© <year> Noli` where the year is the build year. It contains `<nav aria-label="Liens légaux">` if and only if `footerLinks` is not empty, with one link per entry and no other; every `footerLinks` address matches a page that is actually built.
 - **AC-6**: The store buttons are a `<ul>` of two items, Google Play then App Store. For a store whose link is `null` in `storeLinks`, the item shows « Google Play » (or « App Store ») and « Bientôt disponible » with no link, no `href`, no `tabindex` and no ARIA state. For a store with a link, the item is an `<a href>` to that link reading « Télécharger sur Google Play » (or « sur l'App Store »).
 - **AC-7**: `LegalLayout` renders the page name as the only `<h1>`, the line « Mis à jour le <date> » where the date comes from `formatLegalDate()` (`17 octobre 2026`, the same whatever the build machine's time zone), and the body in one `.prose-noli` column of at most 70 characters, at 16 px.
@@ -56,7 +56,7 @@ Le raisonnement et les options comparées sont dans [rationale.md](rationale.md)
 | Composant | Props | Rendu | Erreurs |
 |---|---|---|---|
 | `BaseLayout.astro` | `title?: string` (nom de la page, absent pour l'accueil), `description: string`, `canonical?: boolean` (défaut `true`, `false` pour la 404) | `<html lang="fr">`, `<head>` (AC-2, titre par `pageTitle(title)`, canonical par `new URL(canonicalPath(Astro.url.pathname), Astro.site)`), puis dans `<body>` : lien d'évitement, `SiteHeader`, `<main id="contenu" tabindex="-1">` avec le slot, `SiteFooter` | `description` absente : erreur de type à `astro check` ; vide : le test du build échoue |
-| `SiteHeader.astro` | aucune | lien vers `/` : icône 32 px + « Noli » | — |
+| `SiteHeader.astro` | aucune | lien vers `/` : le mot « Noli » seul | — |
 | `SiteFooter.astro` | aucune | nav des `footerLinks` (si non vide), mailto support, `StoreButtons`, copyright | — |
 | `StoreButtons.astro` | aucune (lit `storeLinks`) | `<ul>` de deux items (AC-6) | — |
 | `LegalLayout.astro` | `title: string`, `description: string`, `updatedAt: Date` | `BaseLayout` + `<article>` : `<h1>`, ligne de mise à jour, `<div class="prose-noli">` avec le slot | — |
@@ -73,8 +73,7 @@ Le raisonnement et les options comparées sont dans [rationale.md](rationale.md)
 | adresse support | `support@nollli.com` | `site.supportEmail` |
 | état et texte des boutons stores | « Bientôt disponible » ou lien | `storeLinks` ; libellés fixés dans `StoreButtons` (AC-6) |
 | date de mise à jour | `17 octobre 2026` | prop `updatedAt` (frontmatter, spec 0001), via `formatLegalDate()` |
-| icône du haut de page | image 32 px | `src/assets/noli-logo.png` (copie de `noli_app/assets/images/noli_logo.png`), `<Image width={64} height={64} class="size-8" loading="eager" alt="">` |
-| favicons | 32 et 180 px | `public/favicon-32.png` et `public/apple-touch-icon.png`, générés une fois depuis le même PNG par `scripts/make-icons.mjs` (commité, lancé à la main, utilise `sharp` déjà installé avec Astro) |
+| favicons | « N » ambre sur fond obsidienne : `public/favicon.svg`, plus `public/favicon-32.png` et `public/apple-touch-icon.png` (180 px) | dessinés dans `scripts/make-icons.mjs` (le « N » est un tracé SVG, pas une police), générés une fois et commités ; plus aucun logo de l'app sur le site (2026-10-17) |
 
 **Jetons** (`@theme` dans `src/styles/global.css`, valeurs de l'app, hex en minuscules ; `design.md` reprend exactement ces chaînes) :
 | Jeton | Valeur | Usage |
@@ -143,7 +142,7 @@ Ordre Tracer Bullet : d'abord un fil complet et visible (jetons, polices, `head`
 
 1. Ajouter `@fontsource-variable/bricolage-grotesque`, `@fontsource-variable/plus-jakarta-sans` et `@tailwindcss/typography` ; écrire dans `global.css` les imports de polices, le `@plugin`, les jetons `@theme`, les styles de base, le focus et le mouvement réduit ; vérifier que les `.woff2` sortent dans `dist/_astro/`, satisfies **AC-8**, **AC-10**
 2. Étendre `site.ts` : `themeColor`, type `Route`, `footerLinks` vide, `pageTitle()`, `canonicalPath()`, `formatLegalDate()`, satisfies **AC-2**, **AC-5**, **AC-7**
-3. Copier le logo dans `src/assets/noli-logo.png` ; écrire `scripts/make-icons.mjs` et générer `public/favicon-32.png` et `public/apple-touch-icon.png`, satisfies **AC-2**
+3. Écrire `scripts/make-icons.mjs` (« N » en tracé SVG) et générer `public/favicon.svg`, `public/favicon-32.png` et `public/apple-touch-icon.png`, satisfies **AC-2**
 4. Compléter `BaseLayout` (props `title?`, `description`, `canonical?` ; `head` complet ; lien d'évitement ; `main#contenu`), et passer `index.astro` et `404.astro` aux nouvelles props, satisfies **AC-2**, **AC-3**, **AC-11**
 5. Créer `SiteHeader` et `SiteFooter` (nav conditionnelle, mailto, copyright, mise en page) et les brancher dans `BaseLayout`, satisfies **AC-4**, **AC-5**, **AC-9**, **AC-10**, **AC-11**
 6. Créer `StoreButtons` (deux états) et le placer dans le pied de page, satisfies **AC-6**
