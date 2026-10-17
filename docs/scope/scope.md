@@ -64,12 +64,12 @@ La page qui bloque la publication sur les deux stores, et le premier fil complet
 **Done when:** `https://nollli.com/confidentialite` répond en HTTPS (et `www` y mène aussi), les emails Brevo partent toujours, la page liste chaque type de donnée collectée, chaque prestataire, les durées de conservation, le cadre légal (Bénin et APDP, RGPD) et les droits avec le contact `support@nollli.com`, et le texte a été relu par une personne qualifiée.
 - [x] Design it (spec): `/architect politique de confidentialité`
 - [ ] Build it: `/develop politique de confidentialité`
-   - [ ] Collection `legal`, route `[slug]` et balises `{{…}}` depuis `site.ts` (AC-1, AC-6)
-   - [ ] Texte complet depuis l'inventaire et lien du pied de page (AC-2 à AC-5, AC-7 à AC-9, AC-12)
-   - [ ] Tests du plugin et de la page (AC-1 à AC-9, AC-12)
+   - [x] Collection `legal`, route `[slug]` et balises `{{…}}` depuis `site.ts` (AC-1, AC-6)
+   - [x] Texte complet depuis l'inventaire et lien du pied de page (AC-2 à AC-5, AC-7 à AC-9, AC-12)
+   - [x] Tests du plugin et de la page (AC-1 à AC-9, AC-12)
    - [ ] Mise en ligne sur Render et `nollli.com`, par toi (AC-10)
 - [ ] Verify it: `/check verify politique de confidentialité` (dont la relecture juridique, AC-11)
-spec [0003](../specs/0003-politique-confidentialite/index.md)
+spec [0003](../specs/0003-politique-confidentialite/index.md) · code in `src/content/legal/confidentialite.md`, `src/pages/[slug].astro`, `src/config/site-values.ts`, `src/content.config.ts`
 
 ## Slice 2: suppression de compte
 
