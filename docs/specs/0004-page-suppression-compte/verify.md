@@ -2,11 +2,11 @@
 _Steps derived from spec 0004 acceptance criteria. `/check verify` runs these; most are already locked in `tests/build-output.test.ts`._
 
 ## Local
-- [ ] `npm run build` → 0 erreur, `dist/suppression-compte.html` produit → AC-1
-- [ ] `npm test` → tests « account deletion page » verts (sections, libellés, `mailto`, mots clés, liens) → AC-1 à AC-11
-- [ ] `/suppression-compte` dans un navigateur à 320 px et 1280 px → les deux façons de supprimer sont visibles avant la première section ; le lien « Écrire au support » ouvre un email avec le sujet « Suppression de mon compte Noli » ; aucune page qui défile en largeur → AC-2, AC-5
-- [ ] La politique de confidentialité renvoie vers `/suppression-compte`, et son `updatedAt` n'a pas changé → AC-11
-- [ ] Chaque fait de la page correspond à la spec 0010 du backend et à l'inventaire de la spec 0003 → AC-12
+- [x] `npm run build` → 0 erreur, `dist/suppression-compte.html` produit → AC-1
+- [x] `npm test` → tests « account deletion page » verts (sections, libellés, `mailto`, mots clés, liens) → AC-1 à AC-11
+- [x] `/suppression-compte` dans un navigateur à 320 px et 1280 px → les deux façons de supprimer sont visibles avant la première section ; le lien « Écrire au support » ouvre un email avec le sujet « Suppression de mon compte Noli » ; aucune page qui défile en largeur → AC-2, AC-5
+- [x] La politique de confidentialité renvoie vers `/suppression-compte`, et son `updatedAt` n'a pas changé → AC-11
+- [x] Chaque fait de la page correspond à la spec 0010 du backend et à l'inventaire de la spec 0003 → AC-12
 
 ## En ligne (après la mise en ligne de la feature 4)
 - [ ] `curl -I https://nollli.com/suppression-compte` → `200`, sans `.html` → AC-1
