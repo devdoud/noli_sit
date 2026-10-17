@@ -1,7 +1,7 @@
 # 0004. Page suppression de compte
 
 **Date**: 2026-10-17
-**Status**: Proposed
+**Status**: In Progress
 
 ## Summary
 
