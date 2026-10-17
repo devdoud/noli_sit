@@ -1,7 +1,118 @@
+/* Charte du site (spec 0002). Valeurs reprises du design system v2 de l'app
+   (noli_app/lib/core/theme/app_theme.dart). design.md liste les mêmes jetons. */
+@import '@fontsource-variable/bricolage-grotesque';
+@import '@fontsource-variable/plus-jakarta-sans';
 @import 'tailwindcss';
+@plugin '@tailwindcss/typography';
 
-/* Jeton provisoire repris de l'app (noli_app/lib/core/theme/app_theme.dart, primary).
-   Les couleurs, polices et espacements complets viennent de la charte (feature 3). */
 @theme {
+  --color-canvas: #0b0c10;
+  --color-surface: #13141b;
+  --color-surface-high: #1c1d26;
+  --color-border: rgb(255 255 255 / 0.06);
+  --color-border-mid: rgb(255 255 255 / 0.08);
   --color-brand: #f5a623;
+  --color-brand-bright: #ffb830;
+  --color-text: #f8f9fa;
+  --color-text-meta: #a0a3bd;
+  --font-display: 'Bricolage Grotesque Variable', system-ui, sans-serif;
+  --font-sans: 'Plus Jakarta Sans Variable', system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    background-color: var(--color-canvas);
+    color-scheme: dark;
+  }
+
+  body {
+    display: flex;
+    min-height: 100dvh;
+    flex-direction: column;
+    background-color: var(--color-canvas);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.625rem;
+  }
+
+  main {
+    flex: 1;
+  }
+
+  main:focus {
+    outline: none;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      transition-duration: 0s !important;
+      animation-duration: 0s !important;
+    }
+  }
+}
+
+/* Textes longs : couleurs de @tailwindcss/typography sur les jetons. Hors couche, pour passer
+   devant les styles du plugin. S'utilise avec la classe prose : class="prose prose-noli". */
+.prose-noli {
+  --tw-prose-body: var(--color-text);
+  --tw-prose-headings: var(--color-text);
+  --tw-prose-lead: var(--color-text-meta);
+  --tw-prose-links: var(--color-brand);
+  --tw-prose-bold: var(--color-text);
+  --tw-prose-counters: var(--color-text-meta);
+  --tw-prose-bullets: var(--color-text-meta);
+  --tw-prose-hr: var(--color-border-mid);
+  --tw-prose-quotes: var(--color-text);
+  --tw-prose-quote-borders: var(--color-border-mid);
+  --tw-prose-captions: var(--color-text-meta);
+  --tw-prose-kbd: var(--color-text);
+  --tw-prose-code: var(--color-text);
+  --tw-prose-pre-code: var(--color-text);
+  --tw-prose-pre-bg: var(--color-surface);
+  --tw-prose-th-borders: var(--color-border-mid);
+  --tw-prose-td-borders: var(--color-border-mid);
+  max-width: 70ch;
+  font-size: 1rem;
+  line-height: 1.625rem;
+}
+
+.prose-noli :where(h2, h3) {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.prose-noli :where(h2) {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+.prose-noli :where(h3) {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+.prose-noli :where(a) {
+  text-decoration-line: underline;
+  text-underline-offset: 4px;
+}
+
+.prose-noli :where(a):hover {
+  color: var(--color-brand-bright);
 }
