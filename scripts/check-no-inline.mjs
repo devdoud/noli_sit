@@ -1,5 +1,7 @@
 // Garde fou de la CSP (spec 0001) : le build échoue si une page de dist/ contient
-// une balise <script>, une balise <style> ou un attribut style="".
+// un script écrit dans la page, une balise <style> ou un attribut style="".
+// Seul un script externe du site est accepté : <script type="module" src="/_astro/….js"></script>,
+// vide (animations de l'accueil, spec 0006 ; CSP script-src 'self').
 // `astro preview` n'applique pas les en têtes de render.yaml, donc ce contrôle les remplace en local.
 // Il échoue aussi si une page ne charge aucune feuille /_astro/*.css (spec 0002) : une page sans
 // style ne doit jamais partir en ligne.
@@ -10,6 +12,8 @@ import { join, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const root = fileURLToPath(new URL('../dist/', import.meta.url))
+// Script externe autorisé, retiré avant les contrôles : tout autre <script> reste refusé.
+const allowedScript = /<script type="module" src="\/_astro\/[^"]+\.js"><\/script>/g
 const forbidden = [
   { label: 'balise <script>', pattern: /<script\b/i },
   { label: 'balise <style>', pattern: /<style\b/i },
@@ -40,8 +44,9 @@ if (htmlFiles.length === 0) {
 const problems = []
 for (const file of htmlFiles) {
   const html = await readFile(file, 'utf8')
+  const withoutAllowedScripts = html.replace(allowedScript, '')
   for (const { label, pattern } of forbidden) {
-    if (pattern.test(html)) problems.push(`${relative(root, file)} : ${label}`)
+    if (pattern.test(withoutAllowedScripts)) problems.push(`${relative(root, file)} : ${label}`)
   }
   if (!stylesheet.test(html)) problems.push(`${relative(root, file)} : feuille de style absente`)
   if (html.includes('{{')) problems.push(`${relative(root, file)} : balise {{…}} non remplacée`)
@@ -60,5 +65,5 @@ if (problems.length > 0) {
 }
 
 console.log(
-  `check-no-inline : ${htmlFiles.length} pages contrôlées, aucun script ni style en ligne, feuille de style présente.`,
+  `check-no-inline : ${htmlFiles.length} pages contrôlées, aucun script ni style écrit dans la page, feuille de style présente.`,
 )

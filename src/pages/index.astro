@@ -88,6 +88,22 @@ const posters = [
   'from-plum to-brand/60',
 ] as const
 
+// Particules du décor : positions écrites en entier pour que Tailwind génère les classes.
+const particles = [
+  'top-[18%] left-[8%]',
+  'top-[30%] left-[46%]',
+  'top-[62%] left-[14%]',
+  'top-[74%] left-[38%]',
+  'top-[12%] left-[62%]',
+  'top-[44%] left-[88%]',
+  'top-[80%] left-[70%]',
+  'top-[56%] left-[56%]',
+  'top-[24%] left-[94%]',
+  'top-[86%] left-[6%]',
+  'top-[38%] left-[26%]',
+  'top-[68%] left-[92%]',
+] as const
+
 const link = 'text-brand underline underline-offset-4 hover:text-brand-bright'
 const summary =
   'flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 px-6 py-4 font-semibold [&::-webkit-details-marker]:hidden'
@@ -96,65 +112,100 @@ const plus = 'text-2xl leading-none text-brand transition-transform group-open:r
 
 <BaseLayout description="Noli, le streaming de séries pour l'Afrique de l'Ouest francophone. Gratuit pour commencer, sans publicité. Bientôt sur Android et iOS.">
   <!-- Bandeau -->
-  <section class="relative overflow-hidden">
+  <section class="relative overflow-hidden" data-motion="hero">
     <div aria-hidden="true" class="pointer-events-none absolute inset-0">
-      <div class="absolute -top-64 -right-64 size-[60rem] bg-radial from-violet/25 via-plum/20 to-transparent to-70%"></div>
-      <div class="absolute top-24 -left-72 size-[44rem] bg-radial from-brand/12 to-transparent to-65%"></div>
+      <div
+        data-motion="halo"
+        class="absolute -top-64 -right-64 size-[60rem] bg-radial from-violet/25 via-plum/20 to-transparent to-70% opacity-60"
+      ></div>
+      <div
+        data-motion="halo"
+        class="absolute top-24 -left-72 size-[44rem] bg-radial from-brand/12 to-transparent to-65% opacity-60"
+      ></div>
+      <!-- Grille lumineuse en perspective, au sol -->
+      <div
+        data-motion="grid"
+        class="absolute -inset-x-1/2 bottom-0 h-[55%] origin-bottom [transform:perspective(520px)_rotateX(68deg)] bg-[linear-gradient(to_right,color-mix(in_oklab,var(--color-brand)_16%,transparent)_1px,transparent_1px),linear-gradient(to_bottom,color-mix(in_oklab,var(--color-violet)_26%,transparent)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:linear-gradient(to_top,black_5%,transparent_80%)]"
+      ></div>
+      {particles.map((position) => (
+        <span
+          data-motion="particle"
+          class={`absolute size-1 rounded-full bg-brand-bright/80 shadow-[0_0_10px_var(--color-brand)] ${position}`}
+        />
+      ))}
     </div>
 
     <div class="relative mx-auto grid w-full max-w-5xl gap-14 px-5 py-16 md:grid-cols-[1.15fr_0.85fr] md:items-center md:py-24">
       <div>
-        <p class="inline-flex items-center gap-2 rounded-full border border-border-mid bg-surface/60 px-3 py-1 text-xs font-semibold tracking-[0.08em] text-text-meta uppercase">
-          <span class="size-1.5 rounded-full bg-brand" aria-hidden="true"></span>
+        <p
+          data-hero="fade"
+          class="inline-flex items-center gap-2 rounded-full border border-border-mid bg-surface/60 px-3 py-1 text-xs font-semibold tracking-[0.08em] text-text-meta uppercase backdrop-blur"
+        >
+          <span
+            class="size-1.5 rounded-full bg-brand shadow-[0_0_8px_var(--color-brand)]"
+            aria-hidden="true"
+          ></span>
           Bientôt sur Android et iOS
         </p>
         <h1 class="mt-6 text-[2.75rem] leading-[1.02] font-extrabold tracking-[-0.035em] md:text-[3.5rem] lg:text-[4.25rem]">
-          Vos séries,
-          <br />
-          <span class="text-brand lg:whitespace-nowrap">dans votre poche.</span>
+          <span data-hero="line" class="block">
+            Vos séries,
+          </span>
+          <span
+            data-hero="line"
+            class="block bg-linear-to-r from-brand via-brand-bright to-brand bg-clip-text text-transparent lg:whitespace-nowrap"
+          >
+            dans votre poche.
+          </span>
         </h1>
-        <p class="mt-6 max-w-xl text-lg leading-8 text-text-meta">
+        <p data-hero="fade" class="mt-6 max-w-xl text-lg leading-8 text-text-meta">
           Noli, c’est le streaming de séries pensé pour l’Afrique de l’Ouest francophone. Commencez
           gratuitement, reprenez là où vous vous êtes arrêté, passez au premium quand vous voulez.
         </p>
-        <div class="mt-8">
+        <div data-hero="fade" class="mt-8">
           <StoreButtons />
         </div>
-        <p class="mt-5 text-sm text-text-meta">Gratuit pour commencer · Sans publicité</p>
+        <p data-hero="fade" class="mt-5 text-sm text-text-meta">
+          Gratuit pour commencer · Sans publicité
+        </p>
       </div>
 
       <!-- Téléphone décoratif -->
-      <div aria-hidden="true" class="relative mx-auto w-64 md:w-72">
-        <div class="absolute -inset-8 rounded-[3.5rem] bg-brand/10 blur-2xl"></div>
-        <div class="relative rounded-[2.75rem] border border-border-mid bg-surface p-2.5 shadow-2xl shadow-black/70">
-          <div class="overflow-hidden rounded-[2.25rem] bg-canvas px-4 pt-3 pb-5">
-            <div class="mx-auto h-5 w-24 rounded-full bg-surface"></div>
-            <div class="mt-4 flex items-center justify-between">
-              <span class="font-display text-lg font-extrabold tracking-[-0.03em]">Noli</span>
-              <span class="size-7 rounded-full bg-surface-high"></span>
-            </div>
-            <div class="relative mt-4 aspect-[16/11] overflow-hidden rounded-2xl bg-linear-to-br from-violet via-plum to-canvas">
-              <div class="absolute inset-x-0 bottom-0 h-2/3 bg-linear-to-t from-canvas/90 to-transparent"></div>
-              <div class="absolute right-3 bottom-3 left-3">
-                <div class="h-2.5 w-28 rounded-full bg-text/90"></div>
-                <div class="mt-2 h-1.5 w-20 rounded-full bg-text-meta/60"></div>
-                <div class="mt-3 flex items-center gap-2">
-                  <span class="grid size-7 place-items-center rounded-full bg-brand">
-                    <svg viewBox="0 0 24 24" class="ml-0.5 size-3.5 fill-canvas">
-                      <path d="M8 5v14l11-7z"></path>
-                    </svg>
-                  </span>
-                  <div class="h-1 flex-1 rounded-full bg-text/15">
-                    <div class="h-1 w-2/5 rounded-full bg-brand"></div>
+      <div aria-hidden="true" data-hero="phone" class="relative mx-auto w-64 md:w-72">
+        <div data-motion="float">
+          <div data-motion="tilt" class="relative">
+            <div class="absolute -inset-8 rounded-[3.5rem] bg-brand/10 blur-2xl"></div>
+            <div class="relative rounded-[2.75rem] border border-border-mid bg-surface p-2.5 shadow-2xl shadow-black/70 ring-1 ring-violet/20">
+              <div class="overflow-hidden rounded-[2.25rem] bg-canvas px-4 pt-3 pb-5">
+                <div class="mx-auto h-5 w-24 rounded-full bg-surface"></div>
+                <div class="mt-4 flex items-center justify-between">
+                  <span class="font-display text-lg font-extrabold tracking-[-0.03em]">Noli</span>
+                  <span class="size-7 rounded-full bg-surface-high"></span>
+                </div>
+                <div class="relative mt-4 aspect-[16/11] overflow-hidden rounded-2xl bg-linear-to-br from-violet via-plum to-canvas">
+                  <div class="absolute inset-x-0 bottom-0 h-2/3 bg-linear-to-t from-canvas/90 to-transparent"></div>
+                  <div class="absolute right-3 bottom-3 left-3">
+                    <div class="h-2.5 w-28 rounded-full bg-text/90"></div>
+                    <div class="mt-2 h-1.5 w-20 rounded-full bg-text-meta/60"></div>
+                    <div class="mt-3 flex items-center gap-2">
+                      <span class="grid size-7 place-items-center rounded-full bg-brand shadow-[0_0_14px_var(--color-brand)]">
+                        <svg viewBox="0 0 24 24" class="ml-0.5 size-3.5 fill-canvas">
+                          <path d="M8 5v14l11-7z"></path>
+                        </svg>
+                      </span>
+                      <div class="h-1 flex-1 rounded-full bg-text/15">
+                        <div data-motion="progress" class="h-1 w-2/5 rounded-full bg-brand"></div>
+                      </div>
+                    </div>
                   </div>
                 </div>
+                <div class="mt-5 h-2 w-20 rounded-full bg-text-meta/40"></div>
+                <div class="mt-3 grid grid-cols-3 gap-2">
+                  {posters.map((gradient) => (
+                    <div class={`aspect-[2/3] rounded-xl bg-linear-to-b ${gradient}`} />
+                  ))}
+                </div>
               </div>
-            </div>
-            <div class="mt-5 h-2 w-20 rounded-full bg-text-meta/40"></div>
-            <div class="mt-3 grid grid-cols-3 gap-2">
-              {posters.map((gradient) => (
-                <div class={`aspect-[2/3] rounded-xl bg-linear-to-b ${gradient}`} />
-              ))}
             </div>
           </div>
         </div>
@@ -165,11 +216,16 @@ const plus = 'text-2xl leading-none text-brand transition-transform group-open:r
   <!-- Pourquoi Noli -->
   <section class="border-t border-border">
     <div class="mx-auto w-full max-w-5xl px-5 py-16 md:py-24">
-      <h2 class="text-3xl md:text-4xl">Pourquoi Noli</h2>
+      <h2 data-reveal class="text-3xl md:text-4xl">
+        Pourquoi Noli
+      </h2>
       <p class="mt-3 max-w-xl text-text-meta">Une application simple, faite pour regarder.</p>
       <ul class="mt-10 grid gap-4 md:grid-cols-3">
         {features.map((feature) => (
-          <li class="rounded-2xl border border-border bg-surface p-6">
+          <li
+            data-reveal
+            class="rounded-2xl border border-border bg-surface p-6 transition-colors hover:border-brand/40"
+          >
             <span
               aria-hidden="true"
               class="grid size-11 place-items-center rounded-xl bg-brand/10 ring-1 ring-brand/25"
@@ -189,10 +245,12 @@ const plus = 'text-2xl leading-none text-brand transition-transform group-open:r
   <!-- Comment ça marche -->
   <section class="border-t border-border bg-surface/40">
     <div class="mx-auto w-full max-w-5xl px-5 py-16 md:py-24">
-      <h2 class="text-3xl md:text-4xl">Comment ça marche</h2>
+      <h2 data-reveal class="text-3xl md:text-4xl">
+        Comment ça marche
+      </h2>
       <ol class="mt-10 grid gap-10 md:grid-cols-3 md:gap-8">
         {steps.map((step, index) => (
-          <li>
+          <li data-reveal>
             <span
               aria-hidden="true"
               class="font-display text-5xl font-extrabold tracking-[-0.04em] text-brand/90"
@@ -210,13 +268,16 @@ const plus = 'text-2xl leading-none text-brand transition-transform group-open:r
   <!-- Gratuit ou Premium -->
   <section class="border-t border-border">
     <div class="mx-auto w-full max-w-5xl px-5 py-16 md:py-24">
-      <h2 class="text-3xl md:text-4xl">Gratuit ou Premium</h2>
+      <h2 data-reveal class="text-3xl md:text-4xl">
+        Gratuit ou Premium
+      </h2>
       <p class="mt-3 max-w-xl text-text-meta">
         Commencez sans payer. Passez au premium quand une série vous accroche.
       </p>
       <div class="mt-10 grid gap-4 md:grid-cols-2">
         {plans.map((plan) => (
           <article
+            data-reveal
             class={`relative rounded-3xl border p-7 ${plan.highlight ? 'border-brand/60 bg-linear-to-b from-plum to-surface' : 'border-border bg-surface'}`}
           >
             {plan.highlight && (
@@ -252,8 +313,13 @@ const plus = 'text-2xl leading-none text-brand transition-transform group-open:r
   <!-- Questions fréquentes -->
   <section class="border-t border-border bg-surface/40">
     <div class="mx-auto w-full max-w-5xl px-5 py-16 md:py-24">
-      <h2 class="text-3xl md:text-4xl">Questions fréquentes</h2>
-      <div class="mt-10 divide-y divide-border rounded-2xl border border-border bg-surface">
+      <h2 data-reveal class="text-3xl md:text-4xl">
+        Questions fréquentes
+      </h2>
+      <div
+        data-reveal
+        class="mt-10 divide-y divide-border rounded-2xl border border-border bg-surface"
+      >
         {faqs.map((faq) => (
           <details class="group">
             <summary class={summary}>
@@ -304,7 +370,10 @@ const plus = 'text-2xl leading-none text-brand transition-transform group-open:r
   <!-- Rappel final -->
   <section class="border-t border-border">
     <div class="mx-auto w-full max-w-5xl px-5 py-16 md:py-24">
-      <div class="relative overflow-hidden rounded-3xl border border-border-mid bg-linear-to-br from-plum via-surface to-canvas px-6 py-12 md:px-12 md:py-16">
+      <div
+        data-reveal
+        class="relative overflow-hidden rounded-3xl border border-border-mid bg-linear-to-br from-plum via-surface to-canvas px-6 py-12 md:px-12 md:py-16"
+      >
         <div
           aria-hidden="true"
           class="pointer-events-none absolute -right-24 -bottom-24 size-80 rounded-full bg-brand/15 blur-3xl"
@@ -325,3 +394,7 @@ const plus = 'text-2xl leading-none text-brand transition-transform group-open:r
     </div>
   </section>
 </BaseLayout>
+
+<script>
+  import '../scripts/home-motion'
+</script>

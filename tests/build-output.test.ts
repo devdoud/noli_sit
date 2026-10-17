@@ -64,7 +64,7 @@ describe('build output (spec 0001)', () => {
   })
 
   it.each(pages)('keeps the %s free of inline script, style and data: resources', (_n, html) => {
-    const page = html()
+    const page = html().replace(/<script type="module" src="\/_astro\/[^"]+\.js"><\/script>/g, '')
     expect(page).not.toMatch(/<script\b/i)
     expect(page).not.toMatch(/<style\b/i)
     expect(page).not.toMatch(/\sstyle\s*=/i)
@@ -79,8 +79,13 @@ describe('build output (spec 0001)', () => {
     for (const href of stylesheets) expect(href).toMatch(/^\/_astro\/[^/]+\.css$/)
   })
 
-  it('ships no JavaScript file at all', () => {
-    expect(files.filter((file) => file.endsWith('.js'))).toEqual([])
+  it('ships JavaScript only as an external module of the home page (spec 0006)', () => {
+    const scripts = files.filter((file) => file.endsWith('.js'))
+    expect(scripts.every((file) => file.startsWith('_astro/'))).toBe(true)
+    expect(indexHtml).toMatch(/<script type="module" src="\/_astro\/[^"]+\.js"><\/script>/)
+    for (const page of [notFoundHtml, privacyHtml, deletionHtml]) {
+      expect(page).not.toMatch(/<script\b/i)
+    }
   })
 
   it('carries the brand color from the app into the CSS', () => {

@@ -5,8 +5,8 @@ Site public de Noli sur `https://nollli.com` : vitrine et pages légales exigée
 ## Stack
 
 - **Language / Runtime**: TypeScript strict (`astro/tsconfigs/strict`), Node 22.12 ou plus (`.nvmrc`)
-- **Framework**: Astro 7, sortie statique (`output: 'static'`, aucun adaptateur), zéro JavaScript envoyé au navigateur
-- **Key dependencies**: Tailwind CSS 4 (`@tailwindcss/vite`), `@tailwindcss/typography`, polices `@fontsource-variable/bricolage-grotesque` et `@fontsource-variable/plus-jakarta-sans`, `@astrojs/markdown-remark` (moteur Markdown unified, nécessaire aux plugins remark : Astro 7 utilise Sätteri par défaut), Vitest
+- **Framework**: Astro 7, sortie statique (`output: 'static'`, aucun adaptateur), aucun JavaScript sauf les animations GSAP de l'accueil (spec 0006)
+- **Key dependencies**: Tailwind CSS 4 (`@tailwindcss/vite`), `@tailwindcss/typography`, polices `@fontsource-variable/bricolage-grotesque` et `@fontsource-variable/plus-jakarta-sans`, `gsap` (animations de l'accueil, `src/scripts/home-motion.ts`), `@astrojs/markdown-remark` (moteur Markdown unified, nécessaire aux plugins remark : Astro 7 utilise Sätteri par défaut), Vitest
 - **Package manager**: npm (`package-lock.json` commité)
 - **Hosting**: Render Static Site (`render.yaml`), déploiement à chaque push sur `main`. Détails : spec [0001](docs/specs/0001-pile-hebergement-domaine/index.md)
 
@@ -37,7 +37,7 @@ Stored in `docs/specs/`. Format: `docs/specs/NNNN-title.md` (ou `NNNN-title/inde
 - Style fonctionnel : composants et fonctions purs, données immuables (`as const`, `readonly`), pas d'état partagé, pas de classes.
 - Structure Astro de la spec 0001 : `pages/`, `layouts/`, `components/`, `content/`, `config/`, `styles/`, `assets/`.
 - Adresses publiques déclarées une seule fois dans `src/config/site.ts` (`routes`), jamais modifiées une fois promises.
-- CSP stricte : aucun `<script>`, `is:inline`, `define:vars`, `set:html` avec du code, attribut `style=""` ni HTML brut dans le Markdown. Pas d'option `layout`/`fit` sur `<Image>`. Chaque page charge une feuille `/_astro/*.css`. Le build échoue sinon.
+- CSP stricte : aucun script écrit dans la page (seul un module externe `/_astro/*.js` importé par un `<script>` Astro est accepté, et seulement sur l'accueil), aucun `is:inline`, `define:vars`, `set:html` avec du code, attribut `style=""` ni HTML brut dans le Markdown. Pas d'option `layout`/`fit` sur `<Image>`. Chaque page charge une feuille `/_astro/*.css`. Le build échoue sinon.
 - Design system : toute interface suit `design.md` (direction, gabarit, composants, accessibilité). Les jetons vivent dans `src/styles/global.css` et sont recopiés à l'identique dans le tableau de `design.md` (un test vérifie la concordance). Toute page passe par `BaseLayout` ou `LegalLayout`.
 - Une page n'entre dans `footerLinks` (`src/config/site.ts`) qu'une fois construite : chaque feature de page y ajoute sa ligne.
 - Textes légaux : un fichier `src/content/legal/<adresse>.md` (rendu par `src/pages/[slug].astro`). Les valeurs d'identité passent par les balises `{{editeur.*}}` et `{{hebergement.region}}` (`src/config/site-values.ts`), seulement dans le texte courant. `publisher` et `dataHosting` de `site.ts` doivent être remplis avant de fusionner dans `main` : sinon Render refuse tout déploiement.

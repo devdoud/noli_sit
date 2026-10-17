@@ -79,6 +79,22 @@
   }
 }
 
+/* Accueil (spec 0006) : le bandeau est masqué avant que GSAP le révèle, seulement si le
+   JavaScript est actif et que les mouvements ne sont pas réduits. Filet de sécurité : si le
+   script ne se charge pas, tout réapparaît après 2,5 s. */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  [data-hero] {
+    opacity: 0;
+    animation: hero-fallback 0s linear 2.5s forwards;
+  }
+}
+
+@keyframes hero-fallback {
+  to {
+    opacity: 1;
+  }
+}
+
 /* Textes longs : couleurs de @tailwindcss/typography sur les jetons. Hors couche, pour passer
    devant les styles du plugin. S'utilise avec la classe prose : class="prose prose-noli". */
 .prose-noli {

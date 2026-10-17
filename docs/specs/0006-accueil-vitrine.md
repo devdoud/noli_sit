@@ -17,6 +17,25 @@ La page `https://nollli.com/` devient une vraie vitrine, dans une ambiance « ci
 - **AC-5**: Two tokens join `@theme` and the `design.md` table: `--color-plum: #1e1a2e` and `--color-violet: #6c5ce7` (app `NColors.plum` and `secondary`), used only on the home page.
 - **AC-6**: At 320 px no sideways scroll; at 1280 px the hero shows text and phone side by side; text pairs meet WCAG AA; `prefers-reduced-motion` respected (no animation is required).
 
+- **AC-7** (ajouté le 2026-10-17, demande du porteur) : the home page is animated with GSAP (core and ScrollTrigger): hero entrance (lines unblur and rise, then sub title and buttons, the phone rises and straightens in 3D), a living backdrop (perspective grid scrolling on the floor, breathing halos, drifting amber particles, floating phone tilting toward a fine pointer), scroll reveals of headings and cards, and the phone's progress bar following the scroll. Intensity: marked but elegant (0.6 to 1.2 s, nothing blinks).
+- **AC-8**: The script is an external module served from `/_astro/` and loaded by the home page only (CSP `script-src 'self'` unchanged); the build check still refuses any script written in a page. Legal pages and the 404 stay without JavaScript.
+- **AC-9**: Without JavaScript the page is complete and readable; with JavaScript, hero elements are hidden only under `@media (scripting: enabled) and (prefers-reduced-motion: no-preference)` and reappear after 2.5 s if the script fails; with `prefers-reduced-motion: reduce` nothing moves and everything is visible at once.
+- **AC-10**: No Content Security Policy violation and no console error with the `render.yaml` CSP applied (checked in Chrome).
+
+## Animations
+
+| Effet | Éléments | Détail |
+|---|---|---|
+| Entrée du bandeau | `[data-hero="line"]`, `[data-hero="fade"]`, `[data-hero="phone"]` | `fromTo` vers un état visible explicite (le CSS les masque avant le script) |
+| Décor | `[data-motion="grid"]`, `"halo"`, `"particle"`, `"float"` | boucles infinies `sine.inOut` |
+| Inclinaison | `[data-motion="tilt"]` | `quickTo` sur `rotationX` et `rotationY` (noms canoniques de GSAP), pointeur précis seulement |
+| Révélations | `[data-reveal]` | `ScrollTrigger.batch`, une seule fois, à 88 % de la hauteur |
+| Lecture | `[data-motion="progress"]` | largeur de 40 % à 92 % avec le défilement du bandeau (`scrub`) |
+
+Coût : environ 45 Ko compressés de JavaScript, sur l'accueil seulement. Code : `src/scripts/home-motion.ts`.
+
+Ce choix revient, pour l'accueil seulement, sur la règle « zéro JavaScript » des specs 0001 et 0002.
+
 ## Design
 
 | Section | Contenu |

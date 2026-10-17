@@ -141,6 +141,34 @@ describe('check-no-inline', () => {
     expect(out).not.toContain('index.html :')
   })
 
+  it('accepts an external module script served from /_astro/ (spec 0006)', async () => {
+    await writePage(
+      'index.html',
+      cleanPage.replace(
+        '</body>',
+        '<script type="module" src="/_astro/home.abc123.js"></script></body>',
+      ),
+    )
+
+    expect(runCheck().code).toBe(0)
+  })
+
+  it.each([
+    ['an external script from another path', '<script type="module" src="/js/home.js"></script>'],
+    [
+      'an external script with inline code',
+      '<script type="module" src="/_astro/a.js">alert(1)</script>',
+    ],
+    ['a classic external script', '<script src="/_astro/a.js"></script>'],
+  ])('still refuses %s (spec 0006)', async (_label, snippet) => {
+    await writePage('index.html', cleanPage.replace('</body>', `${snippet}</body>`))
+
+    const { code, out } = runCheck()
+
+    expect(code).toBe(1)
+    expect(out).toContain('index.html : balise <script>')
+  })
+
   it('fails when dist holds no HTML page at all', async () => {
     await mkdir(join(root, 'dist', '_astro'), { recursive: true })
     await writeFile(join(root, 'dist', '_astro', 'a.css'), 'p{}', 'utf8')
